@@ -34,6 +34,7 @@
         "name":         { "type": "string", "minLength": 1, "maxLength": 80 },
         "category":     { "enum": ["shorts", "captions", "dubbing", "thumbnails", "analytics", "telegram"] },
         "featured":     { "type": "boolean" },
+        "pinned":       { "type": "boolean", "description": "Shown first under every category and price filter (flagship / sponsor slot)" },
         "badge_en":     { "type": "string", "maxLength": 32, "pattern": "^[^\\u0400-\\u04FF]*$" },
         "badge_ru":     { "type": "string", "maxLength": 32 },
         "badge_uk":     { "type": "string", "maxLength": 32 },

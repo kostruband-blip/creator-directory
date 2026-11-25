@@ -9,6 +9,7 @@
       "name": "KoShorts AI Studio",
       "category": "shorts",
       "featured": true,
+      "pinned": true,
       "badge_en": "Editor's Choice",
       "badge_ru": "Выбор редакции",
       "badge_uk": "Вибір редакції",

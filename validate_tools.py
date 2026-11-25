@@ -76,6 +76,8 @@ def validate_tool(tool: dict) -> list[str]:
         errs.append(f"{tid}: category must be one of {CATEGORIES}")
     if not isinstance(tool["featured"], bool):
         errs.append(f"{tid}: featured must be boolean")
+    if "pinned" in tool and not isinstance(tool["pinned"], bool):
+        errs.append(f"{tid}: pinned must be boolean")
     if tool["pricing_type"] not in PRICING_TYPES:
         errs.append(f"{tid}: pricing_type must be one of {PRICING_TYPES}")
 

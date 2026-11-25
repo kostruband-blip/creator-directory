@@ -5,7 +5,7 @@
 
 - 🌐 3 языка: **EN** (по умолчанию, без кириллицы) · **RU** · **UA** — переключатель в шапке, URL `/`, `/ru`, `/uk`
 - 🔎 Живой поиск по названию, описанию и тегам, фильтры по 6 категориям и модели оплаты, состояние в URL (`?cat=shorts&price=free&q=...`)
-- 🥇 Закреплённые карточки (`featured: true`) с золотой рамкой; KoShorts AI Studio всегда №1
+- 🥇 Закреплённые карточки (`featured: true`) с золотой рамкой; KoShorts AI Studio (`pinned: true`) всегда №1 при любом фильтре категории и цены
 - 💰 Блок монетизации: Free / Fast-Track $19 / Top-3 $49 → заявка в [@remtex_shorts_ai_bot](https://t.me/remtex_shorts_ai_bot)
 - 📈 SEO: пререндер карточек в HTML, JSON-LD (`ItemList` + `SoftwareApplication`), hreflang, `sitemap.xml`, `robots.txt`, OG-картинка
 - 📱 Адаптивная вёрстка от 320px, контраст текста WCAG AA
@@ -70,6 +70,8 @@ python auto_update_directory.py --count 5 --category telegram
 1. Добавьте/измените объект в `tools.json` (поля — см. `tools.schema.json`).
 2. `python validate_tools.py && python build_seo.py`
 3. Закоммитьте `tools.json`, `index.html`, `sitemap.xml`.
+
+**`pinned: true`** — карточка показывается первой при *любой* категории и цене (сейчас только KoShorts); поиск на неё действует как обычно.
 
 **Платное закрепление (Top-3):** поставьте `"featured": true` и переместите карточку сразу после KoShorts — закреплённые выводятся первыми в порядке следования в файле. Для Fast-Track можно добавить бейдж, например `"badge_en": "Verified"`, `"badge_ru": "Проверено"`, `"badge_uk": "Перевірено"`.
 
