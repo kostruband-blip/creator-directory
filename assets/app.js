@@ -189,8 +189,11 @@
   /* ---------- Filters ---------- */
   function renderFilters() {
     var d = t();
+    // Chip counts = what the grid will show for that category (pinned tools appear everywhere)
     var counts = { all: state.tools.length };
-    state.tools.forEach(function (x) { counts[x.category] = (counts[x.category] || 0) + 1; });
+    CATS.forEach(function (c) {
+      counts[c] = state.tools.filter(function (x) { return x.pinned === true || x.category === c; }).length;
+    });
 
     catBox.innerHTML = ["all"].concat(CATS).map(function (c) {
       var label = c === "all" ? d.catAll : d.cat[c];
@@ -218,6 +221,8 @@
   function filtered() {
     var words = normalize(state.q).split(/\s+/).filter(Boolean);
     return state.tools.filter(function (x) {
+      // Pinned tools (KoShorts) ignore category/price filters and stay on top; search still applies
+      if (x.pinned === true) return matches(x, words);
       return (state.cat === "all" || x.category === state.cat) &&
         (state.price === "all" || x.pricing_type === state.price) &&
         matches(x, words);
@@ -279,7 +284,10 @@
   function sortTools(list) {
     // Featured first (keeps file order inside each group => KoShorts stays #1)
     return list.map(function (x, i) { return { x: x, i: i }; })
-      .sort(function (a, b) { return (b.x.featured === true) - (a.x.featured === true) || a.i - b.i; })
+      .sort(function (a, b) {
+        return (b.x.pinned === true) - (a.x.pinned === true) ||
+          (b.x.featured === true) - (a.x.featured === true) || a.i - b.i;
+      })
       .map(function (o) { return o.x; });
   }
 

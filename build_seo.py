@@ -37,7 +37,7 @@ def e(s: str) -> str:
 
 
 def sorted_tools(tools: list[dict]) -> list[dict]:
-    return sorted(tools, key=lambda t: (not t.get("featured", False), tools.index(t)))
+    return sorted(tools, key=lambda t: (not t.get("pinned", False), not t.get("featured", False), tools.index(t)))
 
 
 def initials(name: str) -> str:
