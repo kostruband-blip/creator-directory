@@ -8,6 +8,8 @@
 - 🥇 Закреплённые карточки (`featured: true`) с золотой рамкой; KoShorts AI Studio (`pinned: true`) всегда №1 при любом фильтре категории и цены
 - 💰 Блок монетизации: Free / Fast-Track $19 / Top-3 $49 → заявка в [@remtex_shorts_ai_bot](https://t.me/remtex_shorts_ai_bot)
 - 📈 SEO: пререндер карточек в HTML, JSON-LD (`ItemList` + `SoftwareApplication`), hreflang, `sitemap.xml`, `robots.txt`, OG-картинка
+- 📄 Отдельная страница на каждый сервис × 3 языка: `/tools/<id>/`, `/tools/<id>/ru/`, `/tools/<id>/uk/` — «цены, возможности и альтернативы», KoShorts первым в альтернативах
+- 🎯 Метки для бота: тарифы `?start=submit_free` / `submit_fast19` / `submit_top49`, промо-блок на странице сервиса `?start=cd_<id>`
 - 📱 Адаптивная вёрстка от 320px, контраст текста WCAG AA
 
 ## Структура
@@ -19,7 +21,8 @@
 | `tools.json` | База каталога (61 сервис) |
 | `tools.schema.json` | JSON Schema карточки |
 | `validate_tools.py` | Валидатор без зависимостей (схема, дубли, отсутствие кириллицы в EN) |
-| `build_seo.py` | Пересобирает пререндер, JSON-LD, `sitemap.xml`, `robots.txt` |
+| `build_seo.py` | Пересобирает пререндер, JSON-LD, `sitemap.xml`, `robots.txt` и страницы сервисов |
+| `build_pages.py` | Шаблон и тексты (EN/RU/UA) страниц сервисов; папка `tools/` генерируется целиком — не правьте её руками |
 | `auto_update_directory.py` | Автопополнение через Gemini |
 | `.github/workflows/auto_update.yml` | Запуск по понедельникам и вручную |
 | `.github/workflows/validate.yml` | Проверка `tools.json` в PR |
@@ -37,7 +40,7 @@
 | `TELEGRAM_BOT_TOKEN` | — | [@BotFather](https://t.me/BotFather) → `/newbot` |
 | `TELEGRAM_CHAT_ID` | — | ID чата/канала для отчётов (например, через [@userinfobot](https://t.me/userinfobot)); бот должен быть добавлен в канал админом |
 
-Необязательная **переменная** (вкладка *Variables*): `SITE_URL` — ваш домен, например `https://creatordirectory.com` (по умолчанию `https://creator-directory.vercel.app`).
+Необязательная **переменная** (вкладка *Variables*): `SITE_URL` — ваш домен, например `https://creatordirectory.com` (по умолчанию `https://creator-directory-chi.vercel.app`).
 
 Также включите **Settings → Actions → General → Workflow permissions → Read and write permissions**, чтобы workflow мог пушить коммиты.
 
@@ -50,7 +53,14 @@
 
 > Коммиты автопополнения помечены `[skip ci]`: это не даёт запуститься другим workflow GitHub Actions. Vercel по умолчанию такие коммиты деплоит; не добавляйте *Ignored Build Step*, который пропускает `[skip ci]`, иначе новые сервисы не попадут на сайт.
 
-## 3. Автопополнение
+## 3. Google Search Console
+
+1. [search.google.com/search-console](https://search.google.com/search-console) → **Добавить ресурс** → тип **«Ресурс с префиксом в URL»** → `https://creator-directory-chi.vercel.app/` (тип «Домен» для `*.vercel.app` недоступен).
+2. Способ подтверждения **«HTML-файл»**: скачайте `googleXXXX.html` → в GitHub *Add file → Upload files* в корень репозитория → Commit. Через минуту файл будет на сайте → **Подтвердить**.
+3. **Файлы Sitemap** → введите `sitemap.xml` → **Отправить**.
+4. По желанию: **Проверка URL** → `https://creator-directory-chi.vercel.app/tools/opus-clip/` → **Запросить индексирование** для ключевых страниц.
+
+## 3.1. Автопополнение
 
 - **Автоматически:** каждый понедельник в 10:00 UTC добавляются 3 новых сервиса.
 - **Вручную:** *Actions → Auto-expand directory → Run workflow*, параметры `count` (по умолчанию 3) и `target_category` (`any` или конкретная категория).

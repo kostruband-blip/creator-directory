@@ -53,7 +53,7 @@ jobs:
           GEMINI_API_KEY_3: ${{ secrets.GEMINI_API_KEY_3 }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-          SITE_URL: ${{ vars.SITE_URL || 'https://creator-directory.vercel.app' }}
+          SITE_URL: ${{ vars.SITE_URL || 'https://creator-directory-chi.vercel.app' }}
           COUNT: ${{ github.event.inputs.count || '3' }}
           TARGET_CATEGORY: ${{ github.event.inputs.target_category || 'any' }}
         run: python auto_update_directory.py
@@ -65,5 +65,5 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add tools.json index.html sitemap.xml robots.txt
+          git add -A tools.json index.html sitemap.xml robots.txt tools/
           git diff --staged --quiet || (git commit -m "chore: auto-expand directory [skip ci]" && git push)

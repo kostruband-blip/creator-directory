@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://creator-directory.vercel.app/sitemap.xml
+Sitemap: https://creator-directory-chi.vercel.app/sitemap.xml

@@ -5,6 +5,7 @@ Regenerates the static SEO layer from tools.json:
   * JSON-LD (WebSite + ItemList of SoftwareApplication)
   * canonical / hreflang / og:url tags
   * sitemap.xml and robots.txt
+  * static pages for every tool: /tools/<id>/, /tools/<id>/ru/, /tools/<id>/uk/ (build_pages.py)
 
 Run after every change of tools.json:
     SITE_URL=https://your-domain.com python build_seo.py
@@ -19,11 +20,12 @@ import re
 from datetime import date
 from pathlib import Path
 
+import build_pages
 from validate_tools import CATEGORIES, load_catalog
 
 ROOT = Path(__file__).resolve().parent
 INDEX = ROOT / "index.html"
-SITE_URL = os.environ.get("SITE_URL", "https://creator-directory.vercel.app").rstrip("/")
+SITE_URL = os.environ.get("SITE_URL", "https://creator-directory-chi.vercel.app").rstrip("/")
 
 CAT_EN = {
     "shorts": "Shorts & Clips", "captions": "Captions", "dubbing": "AI Dubbing & Voice",
@@ -63,14 +65,17 @@ def card_html(t: dict) -> str:
     if t["url"] != t.get("tg"):
         cls = "btn--gold" if t.get("featured") else "btn--ghost"
         actions.append(f'<a class="btn {cls}" href="{e(t["url"])}" target="_blank" rel="{rel}">Visit website &rarr;</a>')
+    actions.append(f'<a class="btn btn--link" href="/tools/{e(t["id"])}/">Details</a>')
+    case = (f'<a class="case-link" href="{e(t["case_study"])}" target="_blank" rel="noopener">&#9654; Live Case Study: 100% automated Shorts workflow</a>'
+            if t.get("case_study") else "")
     return (
         f'<article class="card{" card--featured" if t.get("featured") else ""}" id="{e(t["id"])}">'
         f'<div class="card__top"><div class="card__logo" aria-hidden="true">{e(initials(t["name"]))}</div>'
-        f'<div class="card__head"><h3 class="card__title"><a href="{e(t["url"])}" target="_blank" rel="{rel}">{e(t["name"])}</a></h3>'
+        f'<div class="card__head"><h3 class="card__title"><a href="/tools/{e(t["id"])}/">{e(t["name"])}</a></h3>'
         f'<div class="card__meta">{"".join(meta)}</div></div></div>'
         f'<p class="card__desc">{e(t["desc_en"])}</p>'
         f'<p class="card__price"><strong>Price:</strong> {e(t["pricing_en"])}</p>'
-        f'<div class="tags">{tags}</div>'
+        f'<div class="tags">{tags}</div>{case}'
         f'<div class="card__actions">{"".join(actions)}</div></article>'
     )
 
@@ -148,7 +153,7 @@ def replace_block(text: str, name: str, content: str) -> str:
     return pattern.sub(lambda m: m.group(1) + "\n" + content + m.group(3), text, count=1)
 
 
-def build_sitemap(updated: str) -> str:
+def build_sitemap(updated: str, tools: list[dict] | None = None) -> str:
     urls = []
     for cat in [None, *CATEGORIES]:
         for lang, path in LANG_PATHS.items():
@@ -162,6 +167,17 @@ def build_sitemap(updated: str) -> str:
                 f"  <url>\n    <loc>{e(loc)}</loc>{alts.replace('&', '&amp;')}\n"
                 f"    <lastmod>{updated}</lastmod>\n    <changefreq>weekly</changefreq>\n"
                 f"    <priority>{'1.0' if not cat and lang == 'en' else '0.8' if not cat else '0.6'}</priority>\n  </url>"
+            )
+    for t in tools or []:
+        alts = "".join(
+            f'\n    <xhtml:link rel="alternate" hreflang="{l}" href="{SITE_URL}{build_pages.page_path(t["id"], l)}"/>'
+            for l in build_pages.LANGS
+        )
+        for l in build_pages.LANGS:
+            urls.append(
+                f"  <url>\n    <loc>{SITE_URL}{build_pages.page_path(t['id'], l)}</loc>{alts}\n"
+                f"    <lastmod>{t['added_at'] if t['added_at'] > updated else updated}</lastmod>\n"
+                f"    <changefreq>monthly</changefreq>\n    <priority>0.7</priority>\n  </url>"
             )
     return (
         '<?xml version="1.0" encoding="UTF-8"?>\n'
@@ -189,9 +205,10 @@ def main() -> None:
     INDEX.write_text(text, encoding="utf-8")
 
     updated = data.get("updated_at") or date.today().isoformat()
-    (ROOT / "sitemap.xml").write_text(build_sitemap(updated), encoding="utf-8")
+    pages = build_pages.build(tools, SITE_URL)
+    (ROOT / "sitemap.xml").write_text(build_sitemap(updated, tools), encoding="utf-8")
     (ROOT / "robots.txt").write_text(f"User-agent: *\nAllow: /\n\nSitemap: {SITE_URL}/sitemap.xml\n", encoding="utf-8")
-    print(f"SEO layer rebuilt for {len(tools)} tools ({SITE_URL})")
+    print(f"SEO layer rebuilt for {len(tools)} tools, {len(pages)} tool pages ({SITE_URL})")
 
 
 if __name__ == "__main__":
