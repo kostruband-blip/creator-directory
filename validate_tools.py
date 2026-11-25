@@ -160,7 +160,15 @@ def save_catalog(data: dict, path: Path = TOOLS_PATH) -> None:
 
 
 def main() -> int:
-    data = load_catalog()
+    try:
+        data = load_catalog()
+    except json.JSONDecodeError as err:
+        lines = TOOLS_PATH.read_text(encoding="utf-8").splitlines()
+        print(f"tools.json is not valid JSON: {err.msg} at line {err.lineno}, column {err.colno}")
+        print("Usually a missing/extra comma or wrong quotes near this place:")
+        for n in range(max(1, err.lineno - 3), min(len(lines), err.lineno + 1) + 1):
+            print(f"  {n:>5} | {lines[n - 1]}")
+        return 1
     errs = validate_catalog(data)
     if errs:
         print(f"tools.json: {len(errs)} problem(s)")
