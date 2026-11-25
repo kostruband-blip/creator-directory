@@ -1,0 +1,5 @@
+.github
+*.py
+__pycache__
+tests
+README.md

@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://creator-directory.vercel.app/tools.schema.json",
+  "title": "CreatorDirectory tools catalog",
+  "type": "object",
+  "required": ["version", "updated_at", "categories", "tools"],
+  "additionalProperties": true,
+  "properties": {
+    "$schema": { "type": "string" },
+    "version": { "type": "integer", "minimum": 1 },
+    "updated_at": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+    "categories": {
+      "type": "array",
+      "items": { "enum": ["shorts", "captions", "dubbing", "thumbnails", "analytics", "telegram"] },
+      "uniqueItems": true
+    },
+    "tools": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/tool" }
+    }
+  },
+  "$defs": {
+    "tool": {
+      "type": "object",
+      "required": [
+        "id", "name", "category", "featured", "pricing_type",
+        "pricing_en", "pricing_ru", "pricing_uk",
+        "desc_en", "desc_ru", "desc_uk",
+        "tags", "url", "added_at"
+      ],
+      "additionalProperties": true,
+      "properties": {
+        "id":           { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$", "maxLength": 60 },
+        "name":         { "type": "string", "minLength": 1, "maxLength": 80 },
+        "category":     { "enum": ["shorts", "captions", "dubbing", "thumbnails", "analytics", "telegram"] },
+        "featured":     { "type": "boolean" },
+        "badge_en":     { "type": "string", "maxLength": 32, "pattern": "^[^\\u0400-\\u04FF]*$" },
+        "badge_ru":     { "type": "string", "maxLength": 32 },
+        "badge_uk":     { "type": "string", "maxLength": 32 },
+        "pricing_type": { "enum": ["free", "freemium", "paid"] },
+        "pricing_en":   { "type": "string", "minLength": 1, "maxLength": 80, "pattern": "^[^\\u0400-\\u04FF]*$" },
+        "pricing_ru":   { "type": "string", "minLength": 1, "maxLength": 80 },
+        "pricing_uk":   { "type": "string", "minLength": 1, "maxLength": 80 },
+        "desc_en":      { "type": "string", "minLength": 40, "maxLength": 420, "pattern": "^[^\\u0400-\\u04FF]*$" },
+        "desc_ru":      { "type": "string", "minLength": 40, "maxLength": 420 },
+        "desc_uk":      { "type": "string", "minLength": 40, "maxLength": 420 },
+        "tags": {
+          "type": "array", "minItems": 3, "maxItems": 7, "uniqueItems": true,
+          "items": { "type": "string", "pattern": "^[a-z0-9][a-z0-9 ./+#-]{0,30}$" }
+        },
+        "url":          { "type": "string", "pattern": "^https://" },
+        "tg":           { "type": "string", "pattern": "^https://t\\.me/[A-Za-z0-9_]{4,}" },
+        "added_at":     { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" }
+      }
+    }
+  }
+}
