@@ -11,6 +11,7 @@ Run after every change of tools.json:
 """
 from __future__ import annotations
 
+import hashlib
 import html
 import json
 import os
@@ -169,6 +170,14 @@ def build_sitemap(updated: str) -> str:
     )
 
 
+def bust_asset_cache(text: str) -> str:
+    """/assets/app.js -> /assets/app.js?v=<content hash> so browsers never run stale JS/CSS."""
+    for name in ("app.js", "styles.css"):
+        digest = hashlib.sha256((ROOT / "assets" / name).read_bytes()).hexdigest()[:10]
+        text = re.sub(rf'/assets/{re.escape(name)}(\?v=[0-9a-f]+)?"', f'/assets/{name}?v={digest}"', text)
+    return text
+
+
 def main() -> None:
     data = load_catalog()
     tools = sorted_tools(data["tools"])
@@ -176,6 +185,7 @@ def main() -> None:
     text = replace_block(text, "SEO:HEAD", head_tags())
     text = replace_block(text, "SEO:JSONLD", f'  <script type="application/ld+json">{jsonld(tools)}</script>')
     text = replace_block(text, "PRERENDER", "\n".join("        " + card_html(t) for t in tools))
+    text = bust_asset_cache(text)
     INDEX.write_text(text, encoding="utf-8")
 
     updated = data.get("updated_at") or date.today().isoformat()

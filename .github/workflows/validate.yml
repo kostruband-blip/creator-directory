@@ -4,7 +4,7 @@ on:
   pull_request:
   push:
     branches: [main]
-    paths: ['tools.json', 'validate_tools.py', 'build_seo.py', 'index.html']
+    paths: ['tools.json', 'validate_tools.py', 'build_seo.py', 'index.html', 'assets/**']
 
 permissions:
   contents: read
