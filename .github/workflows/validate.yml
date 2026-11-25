@@ -1,0 +1,27 @@
+name: Validate catalog
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+    paths: ['tools.json', 'validate_tools.py', 'build_seo.py', 'index.html']
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate tools.json
+        run: python validate_tools.py
+      - name: Check that the SEO layer is up to date
+        env:
+          SITE_URL: ${{ vars.SITE_URL || 'https://creator-directory.vercel.app' }}
+        run: |
+          python build_seo.py
+          git diff --exit-code -- index.html sitemap.xml robots.txt || (echo "Run 'python build_seo.py' and commit the result" && exit 1)

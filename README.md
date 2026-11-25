@@ -1,1 +1,84 @@
-# creator-directory
+# CreatorDirectory
+
+Нишевый каталог **AI-инструментов и Telegram-ботов для авторов YouTube, TikTok, Reels и Telegram-каналов**.
+Статический сайт без сборщиков (HTML + CSS + vanilla JS), хостинг — бесплатный Vercel, автопополнение — GitHub Actions + Gemini.
+
+- 🌐 3 языка: **EN** (по умолчанию, без кириллицы) · **RU** · **UA** — переключатель в шапке, URL `/`, `/ru`, `/uk`
+- 🔎 Живой поиск по названию, описанию и тегам, фильтры по 6 категориям и модели оплаты, состояние в URL (`?cat=shorts&price=free&q=...`)
+- 🥇 Закреплённые карточки (`featured: true`) с золотой рамкой; KoShorts AI Studio всегда №1
+- 💰 Блок монетизации: Free / Fast-Track $19 / Top-3 $49 → заявка в [@remtex_shorts_ai_bot](https://t.me/remtex_shorts_ai_bot)
+- 📈 SEO: пререндер карточек в HTML, JSON-LD (`ItemList` + `SoftwareApplication`), hreflang, `sitemap.xml`, `robots.txt`, OG-картинка
+- 📱 Адаптивная вёрстка от 320px, контраст текста WCAG AA
+
+## Структура
+
+| Файл | Назначение |
+| --- | --- |
+| `index.html` | Страница; между маркерами `PRERENDER`/`SEO:*` — автогенерируемый SEO-слой |
+| `assets/app.js`, `assets/styles.css` | Логика (переводы, поиск, фильтры) и стили |
+| `tools.json` | База каталога (61 сервис) |
+| `tools.schema.json` | JSON Schema карточки |
+| `validate_tools.py` | Валидатор без зависимостей (схема, дубли, отсутствие кириллицы в EN) |
+| `build_seo.py` | Пересобирает пререндер, JSON-LD, `sitemap.xml`, `robots.txt` |
+| `auto_update_directory.py` | Автопополнение через Gemini |
+| `.github/workflows/auto_update.yml` | Запуск по понедельникам и вручную |
+| `.github/workflows/validate.yml` | Проверка `tools.json` в PR |
+| `vercel.json` | Rewrites `/ru` и `/uk`, кэш, заголовки безопасности |
+
+## 1. Секреты GitHub Actions
+
+**Settings → Secrets and variables → Actions → New repository secret**
+
+| Секрет | Обязателен | Где взять |
+| --- | --- | --- |
+| `GEMINI_API_KEY` | ✅ | [Google AI Studio](https://aistudio.google.com/app/apikey) → Create API key |
+| `GEMINI_API_KEY_2` | — | Второй ключ (другой проект/аккаунт) для ротации при лимитах 429 |
+| `GEMINI_API_KEY_3` | — | Третий ключ, по желанию |
+| `TELEGRAM_BOT_TOKEN` | — | [@BotFather](https://t.me/BotFather) → `/newbot` |
+| `TELEGRAM_CHAT_ID` | — | ID чата/канала для отчётов (например, через [@userinfobot](https://t.me/userinfobot)); бот должен быть добавлен в канал админом |
+
+Необязательная **переменная** (вкладка *Variables*): `SITE_URL` — ваш домен, например `https://creatordirectory.com` (по умолчанию `https://creator-directory.vercel.app`).
+
+Также включите **Settings → Actions → General → Workflow permissions → Read and write permissions**, чтобы workflow мог пушить коммиты.
+
+## 2. Деплой на Vercel в 2 клика
+
+1. Откройте [vercel.com/new](https://vercel.com/new) → **Import** репозитория `creator-directory`.
+2. Framework Preset: **Other**, Build Command и Output Directory оставьте пустыми → **Deploy**.
+
+Готово: каждый пуш в `main` (в том числе автокоммиты бота) автоматически публикуется. Если подключите свой домен, укажите его в переменной `SITE_URL` и выполните `python build_seo.py`.
+
+> Коммиты автопополнения помечены `[skip ci]`: это не даёт запуститься другим workflow GitHub Actions. Vercel по умолчанию такие коммиты деплоит; не добавляйте *Ignored Build Step*, который пропускает `[skip ci]`, иначе новые сервисы не попадут на сайт.
+
+## 3. Автопополнение
+
+- **Автоматически:** каждый понедельник в 10:00 UTC добавляются 3 новых сервиса.
+- **Вручную:** *Actions → Auto-expand directory → Run workflow*, параметры `count` (по умолчанию 3) и `target_category` (`any` или конкретная категория).
+
+Как работает скрипт: читает `tools.json` → собирает домены и названия (защита от дублей) → запрашивает у Gemini кандидатов (ротация ключей и моделей `gemini-flash-latest → gemini-3.8-flash → gemini-3.7-flash → gemini-pro-latest`, обход 429/503, пропуск недоступных моделей) → проверяет схему и то, что `url` отвечает HTTP < 400 → дописывает в конец каталога → пересобирает SEO-слой → шлёт отчёт в Telegram. Карусель моделей можно переопределить переменной окружения `GEMINI_MODELS`.
+
+Локально:
+
+```bash
+export GEMINI_API_KEY=...
+python auto_update_directory.py --count 3 --category any --dry-run   # без записи
+python auto_update_directory.py --count 5 --category telegram
+```
+
+## 4. Ручное редактирование
+
+1. Добавьте/измените объект в `tools.json` (поля — см. `tools.schema.json`).
+2. `python validate_tools.py && python build_seo.py`
+3. Закоммитьте `tools.json`, `index.html`, `sitemap.xml`.
+
+**Платное закрепление (Top-3):** поставьте `"featured": true` и переместите карточку сразу после KoShorts — закреплённые выводятся первыми в порядке следования в файле. Для Fast-Track можно добавить бейдж, например `"badge_en": "Verified"`, `"badge_ru": "Проверено"`, `"badge_uk": "Перевірено"`.
+
+## Локальный просмотр
+
+```bash
+python dev_server.py     # http://localhost:8000 (поддерживает /ru и /uk как на Vercel)
+```
+
+---
+
+Powered by [KoShorts AI Studio](https://koshorts.vercel.app)
