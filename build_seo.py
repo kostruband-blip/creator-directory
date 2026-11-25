@@ -53,7 +53,7 @@ def card_html(t: dict) -> str:
     rel = "noopener" if own else "noopener nofollow"
     meta = []
     if t.get("featured"):
-        meta.append('<span class="pill pill--featured">&#9733; Featured</span>')
+        meta.append('<span class="pill pill--featured"><span class="i i-star" aria-hidden="true"></span> Featured</span>')
     if t.get("badge_en"):
         meta.append(f'<span class="pill pill--badge">{e(t["badge_en"])}</span>')
     meta.append(f'<span class="pill">{e(CAT_EN[t["category"]])}</span>')
@@ -64,9 +64,9 @@ def card_html(t: dict) -> str:
         actions.append(f'<a class="btn btn--tg" href="{e(t["tg"])}" target="_blank" rel="noopener">Open in Telegram</a>')
     if t["url"] != t.get("tg"):
         cls = "btn--gold" if t.get("featured") else "btn--ghost"
-        actions.append(f'<a class="btn {cls}" href="{e(t["url"])}" target="_blank" rel="{rel}">Visit website &rarr;</a>')
+        actions.append(f'<a class="btn {cls}" href="{e(t["url"])}" target="_blank" rel="{rel}">Visit website <span class="i i-arrow" aria-hidden="true"></span></a>')
     actions.append(f'<a class="btn btn--link" href="/tools/{e(t["id"])}/">Details</a>')
-    case = (f'<a class="case-link" href="{e(t["case_study"])}" target="_blank" rel="noopener">&#9654; Live Case Study: 100% automated Shorts workflow</a>'
+    case = (f'<a class="case-link" href="{e(t["case_study"])}" target="_blank" rel="noopener"><span class="i i-play" aria-hidden="true"></span> Live Case Study: 100% automated Shorts workflow</a>'
             if t.get("case_study") else "")
     return (
         f'<article class="card{" card--featured" if t.get("featured") else ""}" id="{e(t["id"])}">'
