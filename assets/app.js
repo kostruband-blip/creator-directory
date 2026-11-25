@@ -250,7 +250,7 @@
         '<div class="card__head">' +
           '<h3 class="card__title"><a href="' + esc(toolPath(x.id)) + '">' + esc(x.name) + "</a></h3>" +
           '<div class="card__meta">' +
-            (x.featured ? '<span class="pill pill--featured">&#9733; ' + esc(d.featured) + "</span>" : "") +
+            (x.featured ? '<span class="pill pill--featured"><span class="i i-star" aria-hidden="true"></span> ' + esc(d.featured) + "</span>" : "") +
             (badge ? '<span class="pill pill--badge">' + esc(badge) + "</span>" : "") +
             '<span class="pill">' + esc(d.cat[x.category]) + "</span>" +
             '<span class="pill pill--' + esc(x.pricing_type) + '">' + esc(d.price[x.pricing_type]) + "</span>" +
@@ -262,10 +262,10 @@
       '<div class="tags">' + (x.tags || []).map(function (tag) {
         return '<button type="button" class="tag" data-tag="' + esc(tag) + '">#' + esc(tag) + "</button>";
       }).join("") + "</div>" +
-      (x.case_study ? '<a class="case-link" href="' + esc(safeUrl(x.case_study)) + '" target="_blank" rel="noopener">&#9654; ' + esc(d.caseStudy) + "</a>" : "") +
+      (x.case_study ? '<a class="case-link" href="' + esc(safeUrl(x.case_study)) + '" target="_blank" rel="noopener"><span class="i i-play" aria-hidden="true"></span> ' + esc(d.caseStudy) + "</a>" : "") +
       '<div class="card__actions">' +
         (x.tg ? '<a class="btn btn--tg" href="' + esc(safeUrl(x.tg)) + '" target="_blank" rel="noopener">' + esc(d.openTg) + "</a>" : "") +
-        (x.url !== x.tg ? '<a class="btn ' + (x.featured ? "btn--gold" : "btn--ghost") + '" href="' + esc(safeUrl(x.url)) + '" target="_blank" rel="' + rel + '">' + esc(d.visit) + " &rarr;</a>" : "") +
+        (x.url !== x.tg ? '<a class="btn ' + (x.featured ? "btn--gold" : "btn--ghost") + '" href="' + esc(safeUrl(x.url)) + '" target="_blank" rel="' + rel + '">' + esc(d.visit) + ' <span class="i i-arrow" aria-hidden="true"></span></a>' : "") +
         '<a class="btn btn--link" href="' + esc(toolPath(x.id)) + '">' + esc(d.details) + "</a>" +
       "</div>" +
     "</article>";

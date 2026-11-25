@@ -255,3 +255,11 @@ a.lang__btn { display: inline-flex; align-items: center; justify-content: center
 .promo p { margin: 0; color: var(--muted); }
 .promo__actions { display: flex; flex-direction: column; gap: 10px; align-items: flex-start; }
 .promo--submit { border: 1px solid var(--primary); background: linear-gradient(135deg, rgba(79, 70, 229, .18), var(--surface) 60%); }
+
+/* Inline SVG icons (no dependency on system fonts for the play / star glyphs) */
+.i { display: inline-block; width: .85em; height: .85em; flex-shrink: 0; vertical-align: -.08em; background-color: currentColor;
+  -webkit-mask: var(--icon) no-repeat center / contain; mask: var(--icon) no-repeat center / contain; }
+.i-play { --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M7 4v16l13-8z'/%3E%3C/svg%3E"); }
+.i-star { --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5L2.5 9.4l6.6-.9z'/%3E%3C/svg%3E"); }
+.i-arrow { --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 12h15M13 6l6 6-6 6'/%3E%3C/svg%3E"); }
+.logo__mark .i { width: 14px; height: 14px; margin-left: 2px; }

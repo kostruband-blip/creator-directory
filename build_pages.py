@@ -193,7 +193,7 @@ def render(tool: dict, tools: list[dict], lang: str, site: str, css_v: str) -> s
 
     pills = []
     if tool.get("featured"):
-        pills.append(f'<span class="pill pill--featured">&#9733; {e(d["featured"])}</span>')
+        pills.append(f'<span class="pill pill--featured"><span class="i i-star" aria-hidden="true"></span> {e(d["featured"])}</span>')
     if tool.get(f"badge_{lang}"):
         pills.append(f'<span class="pill pill--badge">{e(tool[f"badge_{lang}"])}</span>')
     pills.append(f'<a class="pill pill--link" href="{home}?cat={cat}">{e(d["cat"][cat])}</a>')
@@ -204,8 +204,8 @@ def render(tool: dict, tools: list[dict], lang: str, site: str, css_v: str) -> s
         actions.append(f'<a class="btn btn--tg" href="{e(tool["tg"])}" target="_blank" rel="noopener">{e(d["open_tg"])}</a>')
     if tool["url"] != tool.get("tg"):
         cls = "btn--gold" if tool.get("featured") else "btn--primary"
-        actions.append(f'<a class="btn {cls}" href="{e(tool["url"])}" target="_blank" rel="{rel}">{e(d["visit"])} &rarr;</a>')
-    case = (f'<a class="case-link" href="{e(tool["case_study"])}" target="_blank" rel="noopener">&#9654; {e(d["case"])}</a>'
+        actions.append(f'<a class="btn {cls}" href="{e(tool["url"])}" target="_blank" rel="{rel}">{e(d["visit"])} <span class="i i-arrow" aria-hidden="true"></span></a>')
+    case = (f'<a class="case-link" href="{e(tool["case_study"])}" target="_blank" rel="noopener"><span class="i i-play" aria-hidden="true"></span> {e(d["case"])}</a>'
             if tool.get("case_study") else "")
 
     facts = [
@@ -219,7 +219,7 @@ def render(tool: dict, tools: list[dict], lang: str, site: str, css_v: str) -> s
     facts_html = "".join(f"<div><dt>{e(k)}</dt><dd>{v}</dd></div>" for k, v in facts)
     tags_html = "".join(f'<span class="tag">#{e(t)}</span>' for t in tool["tags"])
 
-    featured_pill = '<span class="pill pill--featured">&#9733; ' + e(d["featured"]) + "</span>"
+    featured_pill = '<span class="pill pill--featured"><span class="i i-star" aria-hidden="true"></span> ' + e(d["featured"]) + "</span>"
     alt_cards = []
     for a in alternatives(tool, tools):
         flagship = a["id"] == FLAGSHIP_ID
@@ -246,7 +246,7 @@ def render(tool: dict, tools: list[dict], lang: str, site: str, css_v: str) -> s
       </div>
       <div class="promo__actions">
         <a class="btn btn--gold" href="{BOT}?start={start}" target="_blank" rel="noopener">{e(d["cta_btn"])}</a>
-        <a class="case-link" href="{YOUTUBE_CASE}" target="_blank" rel="noopener">&#9654; {e(d["case"])}</a>
+        <a class="case-link" href="{YOUTUBE_CASE}" target="_blank" rel="noopener"><span class="i i-play" aria-hidden="true"></span> {e(d["case"])}</a>
       </div>
     </section>"""
 
@@ -281,7 +281,7 @@ def render(tool: dict, tools: list[dict], lang: str, site: str, css_v: str) -> s
   <header class="header">
     <div class="container header__inner">
       <a class="logo" href="{home}" aria-label="CreatorDirectory">
-        <span class="logo__mark" aria-hidden="true">&#9654;</span>
+        <span class="logo__mark" aria-hidden="true"><span class="i i-play" aria-hidden="true"></span></span>
         <span>Creator<b>Directory</b></span>
       </a>
       <nav class="nav" aria-label="Main">
@@ -323,7 +323,7 @@ def render(tool: dict, tools: list[dict], lang: str, site: str, css_v: str) -> s
       <h2 id="altsTitle" class="tool-h2">{e(d["alts"].format(name=name))}</h2>
       <p class="alts__intro">{e(intro)}</p>
       <div class="grid">{"".join(alt_cards)}</div>
-      <p class="alts__more"><a href="{home}?cat={cat}">{e(d["all_tools"].format(cat=d["cat"][cat]))} &rarr;</a></p>
+      <p class="alts__more"><a href="{home}?cat={cat}">{e(d["all_tools"].format(cat=d["cat"][cat]))} <span class="i i-arrow" aria-hidden="true"></span></a></p>
     </section>
 
     <section class="promo promo--submit" aria-labelledby="submitTitle">
@@ -340,7 +340,7 @@ def render(tool: dict, tools: list[dict], lang: str, site: str, css_v: str) -> s
   <footer class="footer">
     <div class="container footer__inner">
       <p>&copy; 2026 CreatorDirectory. {e(d["rights"])}</p>
-      <p class="footer__case"><a href="{YOUTUBE_CASE}" target="_blank" rel="noopener" class="footer__yt">&#9654; {e(d["case"])}</a></p>
+      <p class="footer__case"><a href="{YOUTUBE_CASE}" target="_blank" rel="noopener" class="footer__yt"><span class="i i-play" aria-hidden="true"></span> {e(d["case"])}</a></p>
       <p>{e(d["powered"])} <a href="https://koshorts.vercel.app" target="_blank" rel="noopener">KoShorts AI Studio</a></p>
     </div>
   </footer>
