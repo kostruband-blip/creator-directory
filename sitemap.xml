@@ -1836,4 +1836,85 @@
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
+  <url>
+    <loc>https://creator-directory-chi.vercel.app/tools/autoshorts-ai/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://creator-directory-chi.vercel.app/tools/autoshorts-ai/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://creator-directory-chi.vercel.app/tools/autoshorts-ai/ru/"/>
+    <xhtml:link rel="alternate" hreflang="uk" href="https://creator-directory-chi.vercel.app/tools/autoshorts-ai/uk/"/>
+    <lastmod>2026-11-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://creator-directory-chi.vercel.app/tools/autoshorts-ai/ru/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://creator-directory-chi.vercel.app/tools/autoshorts-ai/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://creator-directory-chi.vercel.app/tools/autoshorts-ai/ru/"/>
+    <xhtml:link rel="alternate" hreflang="uk" href="https://creator-directory-chi.vercel.app/tools/autoshorts-ai/uk/"/>
+    <lastmod>2026-11-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://creator-directory-chi.vercel.app/tools/autoshorts-ai/uk/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://creator-directory-chi.vercel.app/tools/autoshorts-ai/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://creator-directory-chi.vercel.app/tools/autoshorts-ai/ru/"/>
+    <xhtml:link rel="alternate" hreflang="uk" href="https://creator-directory-chi.vercel.app/tools/autoshorts-ai/uk/"/>
+    <lastmod>2026-11-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://creator-directory-chi.vercel.app/tools/speechify/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://creator-directory-chi.vercel.app/tools/speechify/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://creator-directory-chi.vercel.app/tools/speechify/ru/"/>
+    <xhtml:link rel="alternate" hreflang="uk" href="https://creator-directory-chi.vercel.app/tools/speechify/uk/"/>
+    <lastmod>2026-11-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://creator-directory-chi.vercel.app/tools/speechify/ru/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://creator-directory-chi.vercel.app/tools/speechify/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://creator-directory-chi.vercel.app/tools/speechify/ru/"/>
+    <xhtml:link rel="alternate" hreflang="uk" href="https://creator-directory-chi.vercel.app/tools/speechify/uk/"/>
+    <lastmod>2026-11-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://creator-directory-chi.vercel.app/tools/speechify/uk/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://creator-directory-chi.vercel.app/tools/speechify/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://creator-directory-chi.vercel.app/tools/speechify/ru/"/>
+    <xhtml:link rel="alternate" hreflang="uk" href="https://creator-directory-chi.vercel.app/tools/speechify/uk/"/>
+    <lastmod>2026-11-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://creator-directory-chi.vercel.app/tools/popsters/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://creator-directory-chi.vercel.app/tools/popsters/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://creator-directory-chi.vercel.app/tools/popsters/ru/"/>
+    <xhtml:link rel="alternate" hreflang="uk" href="https://creator-directory-chi.vercel.app/tools/popsters/uk/"/>
+    <lastmod>2026-11-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://creator-directory-chi.vercel.app/tools/popsters/ru/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://creator-directory-chi.vercel.app/tools/popsters/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://creator-directory-chi.vercel.app/tools/popsters/ru/"/>
+    <xhtml:link rel="alternate" hreflang="uk" href="https://creator-directory-chi.vercel.app/tools/popsters/uk/"/>
+    <lastmod>2026-11-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://creator-directory-chi.vercel.app/tools/popsters/uk/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://creator-directory-chi.vercel.app/tools/popsters/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://creator-directory-chi.vercel.app/tools/popsters/ru/"/>
+    <xhtml:link rel="alternate" hreflang="uk" href="https://creator-directory-chi.vercel.app/tools/popsters/uk/"/>
+    <lastmod>2026-11-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
 </urlset>
