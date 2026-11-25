@@ -68,7 +68,7 @@ python auto_update_directory.py --count 5 --category telegram
 ## 4. Ручное редактирование
 
 1. Добавьте/измените объект в `tools.json` (поля — см. `tools.schema.json`).
-2. `python validate_tools.py && python build_seo.py`
+2. `python validate_tools.py && python build_seo.py` (скрипт также проставляет `?v=хеш` к `app.js`/`styles.css`, чтобы браузеры не держали старую версию — запускайте его и после правок в `assets/`)
 3. Закоммитьте `tools.json`, `index.html`, `sitemap.xml`.
 
 **`pinned: true`** — карточка показывается первой при *любой* категории и цене (сейчас только KoShorts); поиск на неё действует как обычно.
