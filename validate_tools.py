@@ -116,6 +116,8 @@ def validate_tool(tool: dict) -> list[str]:
     if "tg" in tool and tool["tg"] not in (None, ""):
         if not isinstance(tool["tg"], str) or not TG_RE.match(tool["tg"]):
             errs.append(f"{tid}: tg must look like https://t.me/<bot>")
+    if "case_study" in tool and (not isinstance(tool["case_study"], str) or not tool["case_study"].startswith("https://")):
+        errs.append(f"{tid}: case_study must be an https:// URL")
     if not isinstance(tool["added_at"], str) or not DATE_RE.match(tool["added_at"]):
         errs.append(f"{tid}: added_at must be YYYY-MM-DD")
     return errs

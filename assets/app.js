@@ -41,7 +41,8 @@
       a2: "New tools are added every week. Paid Fast-Track listings are published within 24 hours.",
       q3: "Which tool should I start with for Shorts?",
       a3: "If you already have long YouTube videos, start with KoShorts AI Studio: it turns a link into ready 9:16 Shorts with subtitles right inside Telegram, and the first 10 videos are free.",
-      footerRights: "All rights reserved.", poweredBy: "Powered by"
+      footerRights: "All rights reserved.", poweredBy: "Powered by",
+      caseStudy: "Live Case Study: 100% automated Shorts workflow", details: "Details"
     },
     ru: {
       htmlTitle: "CreatorDirectory — лучшие ИИ-инструменты и Telegram-боты для авторов YouTube, TikTok, Reels и Telegram",
@@ -76,7 +77,8 @@
       a2: "Новые сервисы добавляются каждую неделю. Платные заявки с ускоренной публикацией размещаются в течение 24 часов.",
       q3: "С какого инструмента начать делать Shorts?",
       a3: "Если у вас уже есть длинные видео на YouTube, начните с KoShorts AI Studio: он превращает ссылку в готовые Shorts 9:16 с субтитрами прямо в Telegram, а первые 10 видео бесплатны.",
-      footerRights: "Все права защищены.", poweredBy: "Работает на"
+      footerRights: "Все права защищены.", poweredBy: "Работает на",
+      caseStudy: "Живой кейс: Shorts на 100% на автомате", details: "Подробнее"
     },
     uk: {
       htmlTitle: "CreatorDirectory — найкращі ШІ-інструменти та Telegram-боти для авторів YouTube, TikTok, Reels і Telegram",
@@ -111,7 +113,8 @@
       a2: "Нові сервіси додаються щотижня. Платні заявки з прискореною публікацією розміщуються протягом 24 годин.",
       q3: "З якого інструмента почати робити Shorts?",
       a3: "Якщо у вас уже є довгі відео на YouTube, почніть із KoShorts AI Studio: він перетворює посилання на готові Shorts 9:16 із субтитрами просто в Telegram, а перші 10 відео безкоштовні.",
-      footerRights: "Усі права захищені.", poweredBy: "Працює на"
+      footerRights: "Усі права захищені.", poweredBy: "Працює на",
+      caseStudy: "Живий кейс: Shorts на 100% на автоматі", details: "Детальніше"
     }
   };
 
@@ -127,6 +130,7 @@
       return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
     });
   }
+  function toolPath(id) { return "/tools/" + encodeURIComponent(id) + "/" + (state.lang === "en" ? "" : state.lang + "/"); }
   function safeUrl(u) { return /^https:\/\//i.test(u || "") ? u : "#"; }
   function t() { return I18N[state.lang]; }
   function field(tool, base) { return tool[base + "_" + state.lang] || tool[base + "_en"] || ""; }
@@ -244,7 +248,7 @@
       '<div class="card__top">' +
         '<div class="card__logo" aria-hidden="true">' + esc(initials(x.name)) + "</div>" +
         '<div class="card__head">' +
-          '<h3 class="card__title"><a href="' + esc(safeUrl(x.url)) + '" target="_blank" rel="' + rel + '">' + esc(x.name) + "</a></h3>" +
+          '<h3 class="card__title"><a href="' + esc(toolPath(x.id)) + '">' + esc(x.name) + "</a></h3>" +
           '<div class="card__meta">' +
             (x.featured ? '<span class="pill pill--featured">&#9733; ' + esc(d.featured) + "</span>" : "") +
             (badge ? '<span class="pill pill--badge">' + esc(badge) + "</span>" : "") +
@@ -258,9 +262,11 @@
       '<div class="tags">' + (x.tags || []).map(function (tag) {
         return '<button type="button" class="tag" data-tag="' + esc(tag) + '">#' + esc(tag) + "</button>";
       }).join("") + "</div>" +
+      (x.case_study ? '<a class="case-link" href="' + esc(safeUrl(x.case_study)) + '" target="_blank" rel="noopener">&#9654; ' + esc(d.caseStudy) + "</a>" : "") +
       '<div class="card__actions">' +
         (x.tg ? '<a class="btn btn--tg" href="' + esc(safeUrl(x.tg)) + '" target="_blank" rel="noopener">' + esc(d.openTg) + "</a>" : "") +
         (x.url !== x.tg ? '<a class="btn ' + (x.featured ? "btn--gold" : "btn--ghost") + '" href="' + esc(safeUrl(x.url)) + '" target="_blank" rel="' + rel + '">' + esc(d.visit) + " &rarr;</a>" : "") +
+        '<a class="btn btn--link" href="' + esc(toolPath(x.id)) + '">' + esc(d.details) + "</a>" +
       "</div>" +
     "</article>";
     return html;
