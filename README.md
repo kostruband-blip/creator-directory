@@ -67,6 +67,8 @@ python auto_update_directory.py --count 5 --category telegram
 
 ## 4. Ручное редактирование
 
+👉 Пошаговая инструкция с шаблоном карточки: [docs/ADD_TOOL.md](docs/ADD_TOOL.md). После коммита в `main` workflow *Rebuild site after manual edit* сам проверит `tools.json` и пересоберёт SEO-слой.
+
 1. Добавьте/измените объект в `tools.json` (поля — см. `tools.schema.json`).
 2. `python validate_tools.py && python build_seo.py` (скрипт также проставляет `?v=хеш` к `app.js`/`styles.css`, чтобы браузеры не держали старую версию — запускайте его и после правок в `assets/`)
 3. Закоммитьте `tools.json`, `index.html`, `sitemap.xml`.

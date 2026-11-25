@@ -1,10 +1,9 @@
 name: Validate catalog
 
+# Pull requests must contain a valid catalog and an up-to-date SEO layer.
+# Direct edits in main are handled by rebuild_seo.yml (it regenerates the SEO layer automatically).
 on:
   pull_request:
-  push:
-    branches: [main]
-    paths: ['tools.json', 'validate_tools.py', 'build_seo.py', 'index.html', 'assets/**']
 
 permissions:
   contents: read
