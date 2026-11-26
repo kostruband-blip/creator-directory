@@ -69,6 +69,31 @@
       "added_at": "2026-11-25"
     },
     {
+      "id": "thumbnail-title-lab",
+      "name": "Thumbnail & Title Lab",
+      "category": "thumbnails",
+      "featured": true,
+      "badge_en": "Free Tool",
+      "badge_ru": "Бесплатно",
+      "badge_uk": "Безкоштовно",
+      "pricing_type": "free",
+      "pricing_en": "100% Free, no sign-up",
+      "pricing_ru": "100% Бесплатно, без регистрации",
+      "pricing_uk": "100% Безкоштовно, без реєстрації",
+      "desc_en": "Free AI YouTube thumbnail generator and A/B title tester: describe your video topic or upload a selfie to get 3 ready-to-download 1280x720 thumbnails and 6 high-CTR title ideas in seconds.",
+      "desc_ru": "Бесплатный ИИ-генератор кликабельных YouTube-обложек 1280×720 и A/B-тестер заголовков: опишите тему видео или загрузите фото и получите 3 готовых превью и 6 вариантов заголовков с оценкой CTR.",
+      "desc_uk": "Безкоштовний ШІ-генератор клікабельних YouTube-обкладинок 1280×720 та A/B-тестер заголовків: опишіть тему відео або завантажте фото й отримайте 3 готових прев'ю та 6 варіантів заголовків з оцінкою CTR.",
+      "tags": [
+        "ai thumbnails",
+        "ctr",
+        "ab testing",
+        "youtube titles",
+        "free"
+      ],
+      "url": "https://creator-studio-ai-psi.vercel.app/thumbnails",
+      "added_at": "2026-11-25"
+    },
+    {
       "id": "opus-clip",
       "name": "OpusClip",
       "category": "shorts",

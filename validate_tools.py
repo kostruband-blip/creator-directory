@@ -137,9 +137,13 @@ def validate_catalog(data: dict) -> list[str]:
             errs.append(f"{tid}: duplicate id")
         seen_ids.add(tid)
         if isinstance(tool.get("url"), str):
+            # Same domain is allowed for different product pages (e.g. site.app/ and site.app/thumbnails),
+            # an identical domain + path is a duplicate.
             dom = normalize_domain(tool["url"])
+            if not dom.startswith("t.me/"):
+                dom += urlparse(tool["url"].strip().lower()).path.rstrip("/")
             if dom in seen_domains:
-                errs.append(f"{tid}: duplicate domain {dom} (also {seen_domains[dom]})")
+                errs.append(f"{tid}: duplicate url {dom} (also {seen_domains[dom]})")
             seen_domains[dom] = tid
         if isinstance(tool.get("name"), str):
             nn = normalize_name(tool["name"])
