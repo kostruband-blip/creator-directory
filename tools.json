@@ -73,6 +73,7 @@
       "name": "Thumbnail & Title Lab",
       "category": "thumbnails",
       "featured": true,
+      "pinned": true,
       "badge_en": "Free Tool",
       "badge_ru": "Бесплатно",
       "badge_uk": "Безкоштовно",
