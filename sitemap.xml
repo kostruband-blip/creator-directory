@@ -244,6 +244,33 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://creator-directory-chi.vercel.app/tools/thumbnail-title-lab/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://creator-directory-chi.vercel.app/tools/thumbnail-title-lab/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://creator-directory-chi.vercel.app/tools/thumbnail-title-lab/ru/"/>
+    <xhtml:link rel="alternate" hreflang="uk" href="https://creator-directory-chi.vercel.app/tools/thumbnail-title-lab/uk/"/>
+    <lastmod>2026-11-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://creator-directory-chi.vercel.app/tools/thumbnail-title-lab/ru/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://creator-directory-chi.vercel.app/tools/thumbnail-title-lab/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://creator-directory-chi.vercel.app/tools/thumbnail-title-lab/ru/"/>
+    <xhtml:link rel="alternate" hreflang="uk" href="https://creator-directory-chi.vercel.app/tools/thumbnail-title-lab/uk/"/>
+    <lastmod>2026-11-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://creator-directory-chi.vercel.app/tools/thumbnail-title-lab/uk/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://creator-directory-chi.vercel.app/tools/thumbnail-title-lab/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://creator-directory-chi.vercel.app/tools/thumbnail-title-lab/ru/"/>
+    <xhtml:link rel="alternate" hreflang="uk" href="https://creator-directory-chi.vercel.app/tools/thumbnail-title-lab/uk/"/>
+    <lastmod>2026-11-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://creator-directory-chi.vercel.app/tools/opus-clip/</loc>
     <xhtml:link rel="alternate" hreflang="en" href="https://creator-directory-chi.vercel.app/tools/opus-clip/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://creator-directory-chi.vercel.app/tools/opus-clip/ru/"/>
