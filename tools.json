@@ -42,6 +42,33 @@
       "added_at": "2026-11-25"
     },
     {
+      "id": "nicheradar-ai",
+      "name": "NicheRadar AI",
+      "category": "analytics",
+      "featured": true,
+      "pinned": true,
+      "badge_en": "Free Tool",
+      "badge_ru": "Бесплатный инструмент",
+      "badge_uk": "Безкоштовний інструмент",
+      "pricing_type": "free",
+      "pricing_en": "Free niche and competitor report, no sign-up",
+      "pricing_ru": "Бесплатный отчёт по нише и конкурентам, без регистрации",
+      "pricing_uk": "Безкоштовний звіт про нішу та конкурентів, без реєстрації",
+      "desc_en": "Free YouTube SEO and niche finder: paste your channel or video link and get a competitor report in seconds. It detects your channel niche, finds your top 5 competitors with their stats and suggests 10 viral video ideas based on what already works in your niche.",
+      "desc_ru": "Бесплатный инструмент YouTube SEO и поиска ниши: вставьте ссылку на канал или видео и за секунды получите отчёт по конкурентам. Сервис определяет нишу канала, находит 5 главных конкурентов с их статистикой и предлагает 10 идей вирусных видео на основе того, что уже работает в вашей нише.",
+      "desc_uk": "Безкоштовний інструмент YouTube SEO та пошуку ніші: вставте посилання на канал або відео й за секунди отримайте звіт про конкурентів. Сервіс визначає нішу каналу, знаходить 5 головних конкурентів з їхньою статистикою та пропонує 10 ідей вірусних відео на основі того, що вже працює у вашій ніші.",
+      "tags": [
+        "youtube seo",
+        "niche finder",
+        "competitors",
+        "video ideas",
+        "channel analysis",
+        "free"
+      ],
+      "url": "https://creator-studio-ai-psi.vercel.app/",
+      "added_at": "2026-11-25"
+    },
+    {
       "id": "opus-clip",
       "name": "OpusClip",
       "category": "shorts",

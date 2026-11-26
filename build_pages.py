@@ -129,11 +129,14 @@ def first_sentence(text: str) -> str:
 
 
 def alternatives(tool: dict, tools: list[dict]) -> list[dict]:
-    """KoShorts first (unless it is this page), then same-category tools (featured first)."""
+    """KoShorts first (unless it is this page), then other pinned tools, then same-category tools (featured first)."""
     flagship = next((t for t in tools if t["id"] == FLAGSHIP_ID), None)
-    same = [t for t in tools if t["category"] == tool["category"] and t["id"] not in (tool["id"], FLAGSHIP_ID)]
+    # Other pinned tools (e.g. NicheRadar AI) are promoted on every page, right after KoShorts
+    pinned = [t for t in tools if t.get("pinned") and t["id"] not in (tool["id"], FLAGSHIP_ID)]
+    skip = {tool["id"], FLAGSHIP_ID} | {t["id"] for t in pinned}
+    same = [t for t in tools if t["category"] == tool["category"] and t["id"] not in skip]
     same.sort(key=lambda t: (not t.get("featured", False), tools.index(t)))
-    result = ([flagship] if flagship and tool["id"] != FLAGSHIP_ID else []) + same
+    result = ([flagship] if flagship and tool["id"] != FLAGSHIP_ID else []) + pinned + same
     return result[:MAX_ALTERNATIVES]
 
 
@@ -222,7 +225,7 @@ def render(tool: dict, tools: list[dict], lang: str, site: str, css_v: str) -> s
     featured_pill = '<span class="pill pill--featured"><span class="i i-star" aria-hidden="true"></span> ' + e(d["featured"]) + "</span>"
     alt_cards = []
     for a in alternatives(tool, tools):
-        flagship = a["id"] == FLAGSHIP_ID
+        flagship = a["id"] == FLAGSHIP_ID or bool(a.get("pinned"))
         alt_cards.append(
             f'<article class="card{" card--featured" if flagship else ""}">'
             f'<div class="card__top"><div class="card__logo" aria-hidden="true">{e(initials(a["name"]))}</div>'
