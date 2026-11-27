@@ -19,6 +19,7 @@ import os
 import re
 import subprocess
 import sys
+import time
 import urllib.error
 import urllib.request
 from pathlib import Path
@@ -28,6 +29,8 @@ ROOT = Path(__file__).resolve().parent
 SITE_URL = os.environ.get("SITE_URL", "https://creator-directory-chi.vercel.app").rstrip("/")
 ENDPOINT = os.environ.get("INDEXNOW_ENDPOINT", "https://api.indexnow.org/indexnow")
 MAX_URLS = 10000  # IndexNow limit per request
+RETRIES = int(os.environ.get("INDEXNOW_RETRIES", "4"))
+RETRY_WAIT = int(os.environ.get("INDEXNOW_RETRY_WAIT", "60"))
 
 
 def find_key() -> str:
@@ -77,17 +80,26 @@ def submit(urls: list[str], key: str, dry_run: bool) -> None:
     if dry_run:
         print("dry run: nothing sent")
         return
-    req = urllib.request.Request(ENDPOINT, data=json.dumps(payload).encode("utf-8"), method="POST",
-                                 headers={"Content-Type": "application/json; charset=utf-8"})
-    try:
-        with urllib.request.urlopen(req, timeout=30) as resp:
-            print(f"IndexNow response: HTTP {resp.status} (200/202 = accepted)")
-    except urllib.error.HTTPError as exc:
-        hints = {400: "bad request", 403: "key not valid — is <key>.txt deployed?", 422: "URLs do not match the host",
-                 429: "too many requests, try later"}
-        print(f"::warning::IndexNow HTTP {exc.code}: {hints.get(exc.code, exc.reason)}")
-    except Exception as exc:  # network problems must not break the deploy pipeline
-        print(f"::warning::IndexNow request failed: {exc}")
+    hints = {400: "bad request", 403: "key not valid — is <key>.txt deployed?", 422: "URLs do not match the host",
+             429: "too many requests, try later"}
+    # 403 right after a deploy usually means the key file is not live yet -> retry a few times
+    for attempt in range(1, RETRIES + 1):
+        req = urllib.request.Request(ENDPOINT, data=json.dumps(payload).encode("utf-8"), method="POST",
+                                     headers={"Content-Type": "application/json; charset=utf-8"})
+        try:
+            with urllib.request.urlopen(req, timeout=30) as resp:
+                print(f"IndexNow response: HTTP {resp.status} (200/202 = accepted)")
+                return
+        except urllib.error.HTTPError as exc:
+            if exc.code in (403, 429) and attempt < RETRIES:
+                print(f"IndexNow HTTP {exc.code} ({hints[exc.code]}), retry {attempt}/{RETRIES - 1} in {RETRY_WAIT}s")
+                time.sleep(RETRY_WAIT)
+                continue
+            print(f"::warning::IndexNow HTTP {exc.code}: {hints.get(exc.code, exc.reason)}")
+            return
+        except Exception as exc:  # network problems must not break the deploy pipeline
+            print(f"::warning::IndexNow request failed: {exc}")
+            return
 
 
 def main() -> None:

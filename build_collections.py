@@ -143,7 +143,7 @@ T = {
         "hub_title": "Best AI Tools for Creators: Collections by Task | CreatorDirectory",
         "hub_h1": "Best AI tools for creators, by task",
         "hub_intro": "Hand-picked collections of AI tools and Telegram bots for YouTube, TikTok, Reels and Telegram creators. Pick a task and compare the tools side by side.",
-        "collections": "Collections", "tools_n": "{n} tools", "updated": "Updated {date}",
+        "collections": "Collections", "tools_n": ("tool", "tools", "tools"), "updated": "Updated {date}",
         "rank_title": "Ranking", "more": "More collections", "pick": "Our pick",
         "faq": "Frequently asked questions",
         "q_free": "Which of these tools are free?",
@@ -153,13 +153,13 @@ T = {
         "q_start": "Which one should I start with?",
         "a_start": "Start with {name}: {why}",
         "q_count": "How many tools are in this list?",
-        "a_count": "{n} tools, checked by hand or by our automated pipeline. The list is updated every week.",
+        "a_count": "{tools}, checked by hand or by our automated pipeline. The list is updated every week.",
     },
     "ru": {
         "hub_title": "Лучшие нейросети для авторов: подборки по задачам | CreatorDirectory",
         "hub_h1": "Лучшие нейросети для авторов по задачам",
         "hub_intro": "Подборки ИИ-сервисов и Telegram-ботов для авторов YouTube, TikTok, Reels и Telegram. Выберите задачу и сравните сервисы.",
-        "collections": "Подборки", "tools_n": "{n} сервисов", "updated": "Обновлено {date}",
+        "collections": "Подборки", "tools_n": ("сервис", "сервиса", "сервисов"), "updated": "Обновлено {date}",
         "rank_title": "Рейтинг", "more": "Другие подборки", "pick": "Наш выбор",
         "faq": "Частые вопросы",
         "q_free": "Какие из этих сервисов бесплатные?",
@@ -169,13 +169,13 @@ T = {
         "q_start": "С чего начать?",
         "a_start": "Начните с {name}: {why}",
         "q_count": "Сколько сервисов в подборке?",
-        "a_count": "{n} сервисов, проверенных вручную или нашим автоматическим конвейером. Подборка обновляется каждую неделю.",
+        "a_count": "{tools}, проверенных вручную или нашим автоматическим конвейером. Подборка обновляется каждую неделю.",
     },
     "uk": {
         "hub_title": "Найкращі нейромережі для авторів: добірки за задачами | CreatorDirectory",
         "hub_h1": "Найкращі нейромережі для авторів за задачами",
         "hub_intro": "Добірки ШІ-сервісів і Telegram-ботів для авторів YouTube, TikTok, Reels і Telegram. Оберіть задачу та порівняйте сервіси.",
-        "collections": "Добірки", "tools_n": "{n} сервісів", "updated": "Оновлено {date}",
+        "collections": "Добірки", "tools_n": ("сервіс", "сервіси", "сервісів"), "updated": "Оновлено {date}",
         "rank_title": "Рейтинг", "more": "Інші добірки", "pick": "Наш вибір",
         "faq": "Часті запитання",
         "q_free": "Які з цих сервісів безкоштовні?",
@@ -185,9 +185,21 @@ T = {
         "q_start": "З чого почати?",
         "a_start": "Почніть із {name}: {why}",
         "q_count": "Скільки сервісів у добірці?",
-        "a_count": "{n} сервісів, перевірених вручну або нашим автоматичним конвеєром. Добірка оновлюється щотижня.",
+        "a_count": "{tools}, перевірених вручну або нашим автоматичним конвеєром. Добірка оновлюється щотижня.",
     },
 }
+
+
+def plural(n: int, lang: str) -> str:
+    """'52 сервиса', '11 сервисов', '1 tool'."""
+    one, few, many = T[lang]["tools_n"]
+    if lang == "en":
+        return f"{n} {one if n == 1 else few}"
+    if n % 10 == 1 and n % 100 != 11:
+        return f"{n} {one}"
+    if 2 <= n % 10 <= 4 and not 12 <= n % 100 <= 14:
+        return f"{n} {few}"
+    return f"{n} {many}"
 
 
 def coll_path(slug: str | None, lang: str) -> str:
@@ -225,8 +237,8 @@ def faq(coll: dict, items: list[dict], lang: str) -> list[tuple[str, str]]:
         out.append((d["q_tg"], d["a_tg"].format(list=name_list(tg))))
     start = relevant[0] if relevant else items[0]
     out.append((d["q_start"], d["a_start"].format(name=start["name"], why=bp.first_sentence(start[f"desc_{lang}"]))))
-    out.append((d["q_count"], d["a_count"].format(n=len(items))))
-    return out
+    out.append((d["q_count"], d["a_count"].format(tools=plural(len(items), lang))))
+    return [(q, a.replace("….", "…")) for q, a in out]
 
 
 def ld(data) -> str:
@@ -263,7 +275,7 @@ def collection_links(lang: str, tools: list[dict], exclude: str | None = None) -
     d = T[lang]
     return "".join(
         f'<a class="chip chip--link" href="{coll_path(c["slug"], lang)}">{e(c[lang]["label"])}'
-        f' <span class="chip__count">{e(d["tools_n"].format(n=len(items_for(c, tools))))}</span></a>'
+        f' <span class="chip__count">{e(plural(len(items_for(c, tools)), lang))}</span></a>'
         for c in COLLECTIONS if c["slug"] != exclude
     )
 
@@ -294,7 +306,7 @@ def render_collection(coll: dict, tools: list[dict], lang: str, site: str, css_v
     <header class="coll-hero">
       <h1 class="tool-hero__title">{e(c["h1"])}</h1>
       <p class="tool-hero__lead">{e(c["intro"])}</p>
-      <p class="coll-hero__meta">{e(d["tools_n"].format(n=len(items)))} · {e(d["updated"].format(date=updated))}</p>
+      <p class="coll-hero__meta">{e(plural(len(items), lang))} · {e(d["updated"].format(date=updated))}</p>
     </header>
     <section aria-labelledby="rankTitle">
       <h2 id="rankTitle" class="visually-hidden">{e(d["rank_title"])}</h2>
@@ -321,7 +333,7 @@ def render_hub(tools: list[dict], lang: str, site: str, css_v: str) -> str:
         f'<article class="card"><h2 class="card__title"><a href="{coll_path(c["slug"], lang)}">{e(c[lang]["h1"])}</a></h2>'
         f'<p class="card__desc">{e(c[lang]["intro"])}</p>'
         f'<div class="card__actions"><a class="btn btn--primary" href="{coll_path(c["slug"], lang)}">'
-        f'{e(d["tools_n"].format(n=len(items_for(c, tools))))} <span class="i i-arrow" aria-hidden="true"></span></a></div></article>'
+        f'{e(plural(len(items_for(c, tools)), lang))} <span class="i i-arrow" aria-hidden="true"></span></a></div></article>'
         for c in COLLECTIONS
     )
     jsonld = {"@context": "https://schema.org", "@type": "ItemList", "name": d["hub_h1"],
