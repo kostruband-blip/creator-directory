@@ -1,0 +1,43 @@
+name: IndexNow ping
+
+# After every deploy of main (merged PR or manual edit) tell Bing / Yandex / DuckDuckGo which pages changed.
+# Commits made by the other workflows ping IndexNow themselves (pushes with GITHUB_TOKEN do not trigger workflows).
+# Manual run with "all" = resubmit the whole sitemap (do this once after connecting).
+on:
+  push:
+    branches: [main]
+    paths: ['index.html', 'tools/**', 'best/**']
+  workflow_dispatch:
+    inputs:
+      all:
+        description: 'Submit every URL from sitemap.xml'
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Wait for the Vercel deploy
+        if: github.event_name == 'push'
+        run: sleep 120
+      - name: Submit to IndexNow
+        env:
+          SITE_URL: ${{ vars.SITE_URL || 'https://creator-directory-chi.vercel.app' }}
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.all }}" = "true" ]; then
+            python indexnow_submit.py --all
+          elif [ "${{ github.event_name }}" = "push" ] && [ "${{ github.event.before }}" != "0000000000000000000000000000000000000000" ]; then
+            python indexnow_submit.py --since ${{ github.event.before }}
+          else
+            python indexnow_submit.py --since HEAD~1
+          fi

@@ -61,9 +61,22 @@ jobs:
       - name: Validate updated catalog
         run: python validate_tools.py
 
+      - name: Remember commit before push (for IndexNow)
+        id: pre
+        run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
       - name: Commit and push
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A tools.json index.html sitemap.xml robots.txt tools/
+          git add -A tools.json index.html sitemap.xml robots.txt tools/ best/
           git diff --staged --quiet || (git commit -m "chore: auto-expand directory [skip ci]" && git push)
+
+      - name: Ping IndexNow (Bing, Yandex, DuckDuckGo) about changed pages
+        if: success()
+        env:
+          SITE_URL: ${{ vars.SITE_URL || 'https://creator-directory-chi.vercel.app' }}
+        run: |
+          if [ "$(git rev-parse HEAD)" = "${{ steps.pre.outputs.sha }}" ]; then echo "No new commit, nothing to submit"; exit 0; fi
+          echo "Waiting for the Vercel deploy..." && sleep 120
+          python indexnow_submit.py --since ${{ steps.pre.outputs.sha }}

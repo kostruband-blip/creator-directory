@@ -41,6 +41,7 @@
       a2: "New tools are added every week. Paid Fast-Track listings are published within 24 hours.",
       q3: "Which tool should I start with for Shorts?",
       a3: "If you already have long YouTube videos, start with KoShorts AI Studio: it turns a link into ready 9:16 Shorts with subtitles right inside Telegram, and the first 10 videos are free.",
+      navCollections: "Collections", collectionsTitle: "Popular collections", collectionsAll: "All collections", ecoTitle: "Free tools for creators:",
       footerRights: "All rights reserved.", poweredBy: "Powered by",
       caseStudy: "Live Case Study: 100% automated Shorts workflow", details: "Details"
     },
@@ -77,6 +78,7 @@
       a2: "Новые сервисы добавляются каждую неделю. Платные заявки с ускоренной публикацией размещаются в течение 24 часов.",
       q3: "С какого инструмента начать делать Shorts?",
       a3: "Если у вас уже есть длинные видео на YouTube, начните с KoShorts AI Studio: он превращает ссылку в готовые Shorts 9:16 с субтитрами прямо в Telegram, а первые 10 видео бесплатны.",
+      navCollections: "Подборки", collectionsTitle: "Популярные подборки", collectionsAll: "Все подборки", ecoTitle: "Бесплатные инструменты для авторов:",
       footerRights: "Все права защищены.", poweredBy: "Работает на",
       caseStudy: "Живой кейс: Shorts на 100% на автомате", details: "Подробнее"
     },
@@ -113,6 +115,7 @@
       a2: "Нові сервіси додаються щотижня. Платні заявки з прискореною публікацією розміщуються протягом 24 годин.",
       q3: "З якого інструмента почати робити Shorts?",
       a3: "Якщо у вас уже є довгі відео на YouTube, почніть із KoShorts AI Studio: він перетворює посилання на готові Shorts 9:16 із субтитрами просто в Telegram, а перші 10 відео безкоштовні.",
+      navCollections: "Добірки", collectionsTitle: "Популярні добірки", collectionsAll: "Усі добірки", ecoTitle: "Безкоштовні інструменти для авторів:",
       footerRights: "Усі права захищені.", poweredBy: "Працює на",
       caseStudy: "Живий кейс: Shorts на 100% на автоматі", details: "Детальніше"
     }
@@ -133,6 +136,10 @@
   function toolPath(id) { return "/tools/" + encodeURIComponent(id) + "/" + (state.lang === "en" ? "" : state.lang + "/"); }
   function safeUrl(u) { return /^https:\/\//i.test(u || "") ? u : "#"; }
   function t() { return I18N[state.lang]; }
+
+  /* COLLECTIONS:START */
+  var COLLECTION_LABELS = {"en": {"ai-shorts-clippers": "AI Shorts clippers", "ai-subtitle-generators": "AI subtitle generators", "ai-dubbing-voiceover": "AI dubbing & voiceover", "ai-youtube-thumbnails": "AI YouTube thumbnails", "youtube-analytics-seo": "YouTube analytics & SEO", "telegram-channel-tools": "Telegram channel tools", "free-ai-tools-for-creators": "Free AI tools for creators"}, "ru": {"ai-shorts-clippers": "Нарезка Shorts нейросетью", "ai-subtitle-generators": "Субтитры нейросетью", "ai-dubbing-voiceover": "ИИ-озвучка и дубляж", "ai-youtube-thumbnails": "Нейросети для обложек YouTube", "youtube-analytics-seo": "Аналитика и SEO для YouTube", "telegram-channel-tools": "Боты для Telegram-каналов", "free-ai-tools-for-creators": "Бесплатные нейросети для авторов"}, "uk": {"ai-shorts-clippers": "Нарізка Shorts нейромережею", "ai-subtitle-generators": "Субтитри нейромережею", "ai-dubbing-voiceover": "ШІ-озвучення та дубляж", "ai-youtube-thumbnails": "Нейромережі для обкладинок YouTube", "youtube-analytics-seo": "Аналітика та SEO для YouTube", "telegram-channel-tools": "Боти для Telegram-каналів", "free-ai-tools-for-creators": "Безкоштовні нейромережі для авторів"}};
+  /* COLLECTIONS:END */
   function field(tool, base) { return tool[base + "_" + state.lang] || tool[base + "_en"] || ""; }
 
   /* ---------- URL <-> state ---------- */
@@ -188,6 +195,13 @@
     document.querySelectorAll(".lang__btn").forEach(function (b) {
       b.setAttribute("aria-pressed", String(b.getAttribute("data-lang") === state.lang));
     });
+    // Collection links (/best/<slug>/ + ru/ | uk/)
+    document.querySelectorAll("[data-col]").forEach(function (a) {
+      var slug = a.getAttribute("data-col");
+      a.setAttribute("href", "/best/" + (slug ? slug + "/" : "") + (state.lang === "en" ? "" : state.lang + "/"));
+      var label = slug && COLLECTION_LABELS[state.lang] && COLLECTION_LABELS[state.lang][slug];
+      if (label) a.textContent = label;
+    });
   }
 
   /* ---------- Filters ---------- */
@@ -242,7 +256,7 @@
   function card(x) {
     var d = t();
     var badge = field(x, "badge");
-    var isOwn = /koshorts\.vercel\.app/.test(x.url);
+    var isOwn = /(koshorts|creator-studio-ai-psi|creator-directory-chi)\.vercel\.app/.test(x.url);
     var rel = isOwn ? "noopener" : "noopener nofollow";
     var html = '<article class="card' + (x.featured ? " card--featured" : "") + '" id="' + esc(x.id) + '">' +
       '<div class="card__top">' +

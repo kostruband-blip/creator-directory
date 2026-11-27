@@ -6,6 +6,7 @@ Regenerates the static SEO layer from tools.json:
   * canonical / hreflang / og:url tags
   * sitemap.xml and robots.txt
   * static pages for every tool: /tools/<id>/, /tools/<id>/ru/, /tools/<id>/uk/ (build_pages.py)
+  * collection landing pages /best/<slug>/ in 3 languages (build_collections.py)
 
 Run after every change of tools.json:
     SITE_URL=https://your-domain.com python build_seo.py
@@ -20,6 +21,7 @@ import re
 from datetime import date
 from pathlib import Path
 
+import build_collections
 import build_pages
 from validate_tools import CATEGORIES, load_catalog
 
@@ -49,8 +51,7 @@ def initials(name: str) -> str:
 
 
 def card_html(t: dict) -> str:
-    own = "koshorts.vercel.app" in t["url"]
-    rel = "noopener" if own else "noopener nofollow"
+    rel = build_pages.rel_for(t["url"])
     meta = []
     if t.get("featured"):
         meta.append('<span class="pill pill--featured"><span class="i i-star" aria-hidden="true"></span> Featured</span>')
@@ -153,36 +154,55 @@ def replace_block(text: str, name: str, content: str) -> str:
     return pattern.sub(lambda m: m.group(1) + "\n" + content + m.group(3), text, count=1)
 
 
-def build_sitemap(updated: str, tools: list[dict] | None = None) -> str:
-    urls = []
-    for cat in [None, *CATEGORIES]:
-        for lang, path in LANG_PATHS.items():
-            base = SITE_URL + ("/" if path == "/" else path)
-            loc = base + (f"?cat={cat}" if cat else "")
-            alts = "".join(
-                f'\n    <xhtml:link rel="alternate" hreflang="{l}" href="{SITE_URL + ("/" if p == "/" else p) + (f"?cat={cat}" if cat else "")}"/>'
-                for l, p in LANG_PATHS.items()
-            )
-            urls.append(
-                f"  <url>\n    <loc>{e(loc)}</loc>{alts.replace('&', '&amp;')}\n"
-                f"    <lastmod>{updated}</lastmod>\n    <changefreq>weekly</changefreq>\n"
-                f"    <priority>{'1.0' if not cat and lang == 'en' else '0.8' if not cat else '0.6'}</priority>\n  </url>"
-            )
-    for t in tools or []:
-        alts = "".join(
-            f'\n    <xhtml:link rel="alternate" hreflang="{l}" href="{SITE_URL}{build_pages.page_path(t["id"], l)}"/>'
-            for l in build_pages.LANGS
-        )
-        for l in build_pages.LANGS:
-            urls.append(
-                f"  <url>\n    <loc>{SITE_URL}{build_pages.page_path(t['id'], l)}</loc>{alts}\n"
-                f"    <lastmod>{t['added_at'] if t['added_at'] > updated else updated}</lastmod>\n"
-                f"    <changefreq>monthly</changefreq>\n    <priority>0.7</priority>\n  </url>"
-            )
+def sitemap_group(paths: list[str], lastmod: str, freq: str, prio: str) -> list[str]:
+    """One <url> per language, each listing all hreflang alternates. paths = [en, ru, uk]."""
+    alts = "".join(
+        f'\n    <xhtml:link rel="alternate" hreflang="{l}" href="{SITE_URL}{p}"/>' for l, p in zip(build_pages.LANGS, paths)
+    ) + f'\n    <xhtml:link rel="alternate" hreflang="x-default" href="{SITE_URL}{paths[0]}"/>'
+    return [
+        f"  <url>\n    <loc>{SITE_URL}{p}</loc>{alts}\n    <lastmod>{lastmod}</lastmod>\n"
+        f"    <changefreq>{freq}</changefreq>\n    <priority>{prio if i == 0 else f'{float(prio) - 0.1:.1f}'}</priority>\n  </url>"
+        for i, p in enumerate(paths)
+    ]
+
+
+def build_sitemap(updated: str, tools: list[dict], collection_groups: list[list[str]]) -> str:
+    urls = sitemap_group(["/", "/ru", "/uk"], updated, "daily", "1.0")
+    for group in collection_groups:
+        urls += sitemap_group(group, updated, "weekly", "0.9")
+    for t in tools:
+        lastmod = t["added_at"] if t["added_at"] > updated else updated
+        urls += sitemap_group([build_pages.page_path(t["id"], l) for l in build_pages.LANGS], lastmod, "monthly", "0.7")
     return (
         '<?xml version="1.0" encoding="UTF-8"?>\n'
         '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n'
         + "\n".join(urls) + "\n</urlset>\n"
+    )
+
+
+def collections_block() -> str:
+    """Links to /best/<slug>/ on the home page. app.js swaps label + URL for RU/UA."""
+    links = []
+    for c in build_collections.COLLECTIONS:
+        links.append(f'          <a class="chip chip--link" href="/best/{c["slug"]}/" data-col="{c["slug"]}">{e(c["en"]["label"])}</a>')
+    return "\n".join(links)
+
+
+def update_app_js() -> None:
+    """RU/UA labels of the collections live in app.js (index.html must stay Cyrillic-free)."""
+    path = ROOT / "assets" / "app.js"
+    labels = {l: {c["slug"]: c[l]["label"] for c in build_collections.COLLECTIONS} for l in build_pages.LANGS}
+    js = "  var COLLECTION_LABELS = " + json.dumps(labels, ensure_ascii=False) + ";"
+    text = path.read_text(encoding="utf-8")
+    pattern = re.compile(r"(/\* COLLECTIONS:START \*/)(.*?)(/\* COLLECTIONS:END \*/)", re.S)
+    if not pattern.search(text):
+        raise SystemExit("Marker COLLECTIONS not found in assets/app.js")
+    path.write_text(pattern.sub(lambda m: m.group(1) + "\n" + js + "\n  " + m.group(3), text, count=1), encoding="utf-8")
+
+
+def ecosystem_block() -> str:
+    return "\n".join(
+        f'        <a href="{e(u)}" target="_blank" rel="noopener">{e(n)}</a>' for n, u in build_pages.ECOSYSTEM
     )
 
 
@@ -197,18 +217,23 @@ def bust_asset_cache(text: str) -> str:
 def main() -> None:
     data = load_catalog()
     tools = sorted_tools(data["tools"])
+    update_app_js()
     text = INDEX.read_text(encoding="utf-8")
     text = replace_block(text, "SEO:HEAD", head_tags())
     text = replace_block(text, "SEO:JSONLD", f'  <script type="application/ld+json">{jsonld(tools)}</script>')
     text = replace_block(text, "PRERENDER", "\n".join("        " + card_html(t) for t in tools))
+    text = replace_block(text, "COLLECTIONS", collections_block())
+    text = replace_block(text, "ECOSYSTEM", ecosystem_block())
     text = bust_asset_cache(text)
     INDEX.write_text(text, encoding="utf-8")
 
     updated = data.get("updated_at") or date.today().isoformat()
     pages = build_pages.build(tools, SITE_URL)
-    (ROOT / "sitemap.xml").write_text(build_sitemap(updated, tools), encoding="utf-8")
+    groups = build_collections.build(tools, SITE_URL, updated)
+    (ROOT / "sitemap.xml").write_text(build_sitemap(updated, tools, groups), encoding="utf-8")
     (ROOT / "robots.txt").write_text(f"User-agent: *\nAllow: /\n\nSitemap: {SITE_URL}/sitemap.xml\n", encoding="utf-8")
-    print(f"SEO layer rebuilt for {len(tools)} tools, {len(pages)} tool pages ({SITE_URL})")
+    print(f"SEO layer rebuilt for {len(tools)} tools, {len(pages)} tool pages, "
+          f"{sum(len(g) for g in groups)} collection pages ({SITE_URL})")
 
 
 if __name__ == "__main__":

@@ -28,6 +28,15 @@ BOT = "https://t.me/remtex_shorts_ai_bot"
 YOUTUBE_CASE = "https://www.youtube.com/@rem-tex"
 FLAGSHIP_ID = "koshorts-ai-studio"
 MAX_ALTERNATIVES = 6
+# Our own projects: links to them are dofollow (no rel=nofollow) and they appear in the footer block.
+OWN_HOSTS = ("koshorts.vercel.app", "creator-studio-ai-psi.vercel.app", "creator-directory-chi.vercel.app")
+ECOSYSTEM = [
+    ("KoShorts AI Studio", "https://koshorts.vercel.app/"),
+    ("NicheRadar AI", "https://creator-studio-ai-psi.vercel.app/"),
+    ("Thumbnail & Title Lab", "https://creator-studio-ai-psi.vercel.app/thumbnails"),
+    ("Content Repurposer", "https://creator-studio-ai-psi.vercel.app/repurpose"),
+    ("@remtex_shorts_ai_bot", BOT),
+]
 
 T = {
     "en": {
@@ -51,6 +60,9 @@ T = {
         "submit_btn": "Submit your tool",
         "case": "Live Case Study: 100% automated Shorts workflow",
         "rights": "All rights reserved.", "powered": "Powered by",
+        "eco": "Free tools for creators:", "collections": "Collections",
+        "badge_title": "Are you the maker? Add the badge",
+        "badge_text": "Paste this code on your website to show that {name} is featured on CreatorDirectory.",
     },
     "ru": {
         "title": "{name} — цены, возможности и альтернативы | CreatorDirectory",
@@ -73,6 +85,9 @@ T = {
         "submit_btn": "Добавить сервис",
         "case": "Живой кейс: Shorts на 100% на автомате",
         "rights": "Все права защищены.", "powered": "Работает на",
+        "eco": "Бесплатные инструменты для авторов:", "collections": "Подборки",
+        "badge_title": "Вы автор сервиса? Добавьте бейдж",
+        "badge_text": "Вставьте этот код на свой сайт, чтобы показать, что {name} есть в CreatorDirectory.",
     },
     "uk": {
         "title": "{name} — ціни, можливості та альтернативи | CreatorDirectory",
@@ -95,6 +110,9 @@ T = {
         "submit_btn": "Додати сервіс",
         "case": "Живий кейс: Shorts на 100% на автоматі",
         "rights": "Усі права захищені.", "powered": "Працює на",
+        "eco": "Безкоштовні інструменти для авторів:", "collections": "Добірки",
+        "badge_title": "Ви автор сервісу? Додайте бейдж",
+        "badge_text": "Вставте цей код на свій сайт, щоб показати, що {name} є в CreatorDirectory.",
     },
 }
 
@@ -110,6 +128,121 @@ def initials(name: str) -> str:
 
 def page_path(tool_id: str, lang: str) -> str:
     return f"/tools/{tool_id}/" + ("" if lang == "en" else f"{lang}/")
+
+
+def is_own(url: str) -> bool:
+    return any(h in url for h in OWN_HOSTS)
+
+
+def rel_for(url: str) -> str:
+    return "noopener" if is_own(url) else "noopener nofollow"
+
+
+def category_link(cat: str, lang: str) -> str:
+    """Category landing page (/best/<slug>/) — a real indexable URL instead of ?cat=."""
+    import build_collections
+    return build_collections.coll_path(build_collections.CAT_TO_SLUG[cat], lang)
+
+
+def submit_promo(lang: str) -> str:
+    d = T[lang]
+    return f"""
+    <section class="promo promo--submit" aria-labelledby="submitTitle">
+      <div>
+        <h2 id="submitTitle">{e(d["submit_title"])}</h2>
+        <p>{e(d["submit_text"])}</p>
+      </div>
+      <div class="promo__actions">
+        <a class="btn btn--primary" href="{HOME[lang]}#submit">{e(d["submit_btn"])}</a>
+      </div>
+    </section>"""
+
+
+def ecosystem_html(lang: str) -> str:
+    links = " · ".join(f'<a href="{e(u)}" target="_blank" rel="noopener">{e(n)}</a>' for n, u in ECOSYSTEM)
+    return f'<p class="footer__eco"><span>{e(T[lang]["eco"])}</span> {links}</p>'
+
+
+def badge_snippet(tool: dict, site: str) -> str:
+    return (f'<a href="{site}{page_path(tool["id"], "en")}" target="_blank" rel="noopener">'
+            f'<img src="{site}/assets/badge-featured.svg" alt="Featured on CreatorDirectory" width="220" height="54" /></a>')
+
+
+def page_shell(*, lang: str, site: str, css_v: str, title: str, desc: str, path_for, jsonld: str, body: str,
+               main_class: str = "tool-page") -> str:
+    """Common <head>, header and footer for every generated page."""
+    d = T[lang]
+    url_self = site + path_for(lang)
+    home = HOME[lang]
+    alternates = "\n".join(
+        f'  <link rel="alternate" hreflang="{l}" href="{site}{path_for(l)}" />' for l in LANGS
+    ) + f'\n  <link rel="alternate" hreflang="x-default" href="{site}{path_for("en")}" />'
+    og_alt = "\n".join(f'  <meta property="og:locale:alternate" content="{OG_LOCALE[l]}" />' for l in LANGS if l != lang)
+    current = ' aria-current="page"'
+    lang_switch = "".join(
+        f'<a class="lang__btn" href="{path_for(l)}" hreflang="{l}" lang="{l}"'
+        f'{current if l == lang else ""}>{"UA" if l == "uk" else l.upper()}</a>'
+        for l in LANGS
+    )
+    best = "/best/" + ("" if lang == "en" else lang + "/")
+    return f"""<!DOCTYPE html>
+<html lang="{lang}">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{e(title)}</title>
+  <meta name="description" content="{e(desc)}" />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <meta name="theme-color" content="#0b0d12" />
+  <link rel="canonical" href="{url_self}" />
+{alternates}
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="CreatorDirectory" />
+  <meta property="og:title" content="{e(title)}" />
+  <meta property="og:description" content="{e(desc)}" />
+  <meta property="og:url" content="{url_self}" />
+  <meta property="og:image" content="{site}/assets/og.png" />
+  <meta property="og:locale" content="{OG_LOCALE[lang]}" />
+{og_alt}
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="{site}/assets/og.png" />
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="/assets/styles.css?v={css_v}" />
+  <script type="application/ld+json">{jsonld}</script>
+  <script>try{{localStorage.setItem("cd_lang","{lang}")}}catch(e){{}}</script>
+</head>
+<body>
+  <a class="skip-link" href="#main">{e(d["skip"])}</a>
+  <header class="header">
+    <div class="container header__inner">
+      <a class="logo" href="{home}" aria-label="CreatorDirectory">
+        <span class="logo__mark" aria-hidden="true"><span class="i i-play" aria-hidden="true"></span></span>
+        <span>Creator<b>Directory</b></span>
+      </a>
+      <nav class="nav" aria-label="Main">
+        <a href="{home}#catalog">{e(d["catalog"])}</a>
+        <a href="{best}">{e(d["collections"])}</a>
+        <a href="{home}#submit">{e(d["submit"])}</a>
+      </nav>
+      <div class="lang" role="group" aria-label="Language">{lang_switch}</div>
+    </div>
+  </header>
+
+  <main id="main" class="container {main_class}">
+{body}
+  </main>
+
+  <footer class="footer">
+    <div class="container footer__inner">
+      <p>&copy; 2026 CreatorDirectory. {e(d["rights"])}</p>
+      <p class="footer__case"><a href="{YOUTUBE_CASE}" target="_blank" rel="noopener" class="footer__yt"><span class="i i-play" aria-hidden="true"></span> {e(d["case"])}</a></p>
+      <p>{e(d["powered"])} <a href="https://koshorts.vercel.app" target="_blank" rel="noopener">KoShorts AI Studio</a></p>
+      {ecosystem_html(lang)}
+    </div>
+  </footer>
+</body>
+</html>
+"""
 
 
 def asset_version(name: str) -> str:
@@ -164,7 +297,7 @@ def jsonld(tool: dict, lang: str, site: str) -> str:
             "itemListElement": [
                 {"@type": "ListItem", "position": 1, "name": d["home"], "item": site + HOME[lang]},
                 {"@type": "ListItem", "position": 2, "name": d["cat"][tool["category"]],
-                 "item": f"{site}{HOME[lang]}?cat={tool['category']}"},
+                 "item": site + category_link(tool["category"], lang)},
                 {"@type": "ListItem", "position": 3, "name": tool["name"], "item": site + page_path(tool["id"], lang)},
             ],
         },
@@ -175,31 +308,18 @@ def jsonld(tool: dict, lang: str, site: str) -> str:
 def render(tool: dict, tools: list[dict], lang: str, site: str, css_v: str) -> str:
     d = T[lang]
     name, cat = tool["name"], tool["category"]
-    own = "koshorts.vercel.app" in tool["url"]
-    rel = "noopener" if own else "noopener nofollow"
-    url_self = site + page_path(tool["id"], lang)
+    rel = rel_for(tool["url"])
     home = HOME[lang]
+    cat_url = category_link(cat, lang)
     title = d["title"].format(name=name)
     desc = meta_description(f"{name}: {tool[f'desc_{lang}']}")
-
-    alternates = "\n".join(
-        f'  <link rel="alternate" hreflang="{l}" href="{site}{page_path(tool["id"], l)}" />' for l in LANGS
-    ) + f'\n  <link rel="alternate" hreflang="x-default" href="{site}{page_path(tool["id"], "en")}" />'
-    og_alt = "\n".join(f'  <meta property="og:locale:alternate" content="{OG_LOCALE[l]}" />' for l in LANGS if l != lang)
-
-    current = ' aria-current="page"'
-    lang_switch = "".join(
-        f'<a class="lang__btn" href="{page_path(tool["id"], l)}" hreflang="{l}" lang="{l}"'
-        f'{current if l == lang else ""}>{"UA" if l == "uk" else l.upper()}</a>'
-        for l in LANGS
-    )
 
     pills = []
     if tool.get("featured"):
         pills.append(f'<span class="pill pill--featured"><span class="i i-star" aria-hidden="true"></span> {e(d["featured"])}</span>')
     if tool.get(f"badge_{lang}"):
         pills.append(f'<span class="pill pill--badge">{e(tool[f"badge_{lang}"])}</span>')
-    pills.append(f'<a class="pill pill--link" href="{home}?cat={cat}">{e(d["cat"][cat])}</a>')
+    pills.append(f'<a class="pill pill--link" href="{cat_url}">{e(d["cat"][cat])}</a>')
     pills.append(f'<span class="pill pill--{tool["pricing_type"]}">{e(d["price"][tool["pricing_type"]])}</span>')
 
     actions = []
@@ -212,7 +332,7 @@ def render(tool: dict, tools: list[dict], lang: str, site: str, css_v: str) -> s
             if tool.get("case_study") else "")
 
     facts = [
-        (d["f_cat"], f'<a href="{home}?cat={cat}">{e(d["cat"][cat])}</a>'),
+        (d["f_cat"], f'<a href="{cat_url}">{e(d["cat"][cat])}</a>'),
         (d["f_model"], e(d["price"][tool["pricing_type"]])),
         (d["f_price"], e(tool[f"pricing_{lang}"])),
         (d["f_tg"], f'<a href="{e(tool["tg"])}" target="_blank" rel="noopener">{e(tool["tg"].replace("https://", ""))}</a>'
@@ -253,52 +373,10 @@ def render(tool: dict, tools: list[dict], lang: str, site: str, css_v: str) -> s
       </div>
     </section>"""
 
-    return f"""<!DOCTYPE html>
-<html lang="{lang}">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>{e(title)}</title>
-  <meta name="description" content="{e(desc)}" />
-  <meta name="robots" content="index, follow, max-image-preview:large" />
-  <meta name="theme-color" content="#0b0d12" />
-  <link rel="canonical" href="{url_self}" />
-{alternates}
-  <meta property="og:type" content="website" />
-  <meta property="og:site_name" content="CreatorDirectory" />
-  <meta property="og:title" content="{e(title)}" />
-  <meta property="og:description" content="{e(desc)}" />
-  <meta property="og:url" content="{url_self}" />
-  <meta property="og:image" content="{site}/assets/og.png" />
-  <meta property="og:locale" content="{OG_LOCALE[lang]}" />
-{og_alt}
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:image" content="{site}/assets/og.png" />
-  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
-  <link rel="stylesheet" href="/assets/styles.css?v={css_v}" />
-  <script type="application/ld+json">{jsonld(tool, lang, site)}</script>
-  <script>try{{localStorage.setItem("cd_lang","{lang}")}}catch(e){{}}</script>
-</head>
-<body>
-  <a class="skip-link" href="#main">{e(d["skip"])}</a>
-  <header class="header">
-    <div class="container header__inner">
-      <a class="logo" href="{home}" aria-label="CreatorDirectory">
-        <span class="logo__mark" aria-hidden="true"><span class="i i-play" aria-hidden="true"></span></span>
-        <span>Creator<b>Directory</b></span>
-      </a>
-      <nav class="nav" aria-label="Main">
-        <a href="{home}#catalog">{e(d["catalog"])}</a>
-        <a href="{home}#submit">{e(d["submit"])}</a>
-      </nav>
-      <div class="lang" role="group" aria-label="Language">{lang_switch}</div>
-    </div>
-  </header>
-
-  <main id="main" class="container tool-page">
+    body = f"""
     <nav class="crumbs" aria-label="Breadcrumb">
       <a href="{home}">{e(d["home"])}</a> <span aria-hidden="true">&rsaquo;</span>
-      <a href="{home}?cat={cat}">{e(d["cat"][cat])}</a> <span aria-hidden="true">&rsaquo;</span>
+      <a href="{cat_url}">{e(d["cat"][cat])}</a> <span aria-hidden="true">&rsaquo;</span>
       <span aria-current="page">{e(name)}</span>
     </nav>
 
@@ -326,30 +404,18 @@ def render(tool: dict, tools: list[dict], lang: str, site: str, css_v: str) -> s
       <h2 id="altsTitle" class="tool-h2">{e(d["alts"].format(name=name))}</h2>
       <p class="alts__intro">{e(intro)}</p>
       <div class="grid">{"".join(alt_cards)}</div>
-      <p class="alts__more"><a href="{home}?cat={cat}">{e(d["all_tools"].format(cat=d["cat"][cat]))} <span class="i i-arrow" aria-hidden="true"></span></a></p>
+      <p class="alts__more"><a href="{cat_url}">{e(d["all_tools"].format(cat=d["cat"][cat]))} <span class="i i-arrow" aria-hidden="true"></span></a></p>
     </section>
 
-    <section class="promo promo--submit" aria-labelledby="submitTitle">
-      <div>
-        <h2 id="submitTitle">{e(d["submit_title"])}</h2>
-        <p>{e(d["submit_text"])}</p>
-      </div>
-      <div class="promo__actions">
-        <a class="btn btn--primary" href="{home}#submit">{e(d["submit_btn"])}</a>
-      </div>
-    </section>
-  </main>
-
-  <footer class="footer">
-    <div class="container footer__inner">
-      <p>&copy; 2026 CreatorDirectory. {e(d["rights"])}</p>
-      <p class="footer__case"><a href="{YOUTUBE_CASE}" target="_blank" rel="noopener" class="footer__yt"><span class="i i-play" aria-hidden="true"></span> {e(d["case"])}</a></p>
-      <p>{e(d["powered"])} <a href="https://koshorts.vercel.app" target="_blank" rel="noopener">KoShorts AI Studio</a></p>
-    </div>
-  </footer>
-</body>
-</html>
-"""
+    <details class="badge-embed">
+      <summary>{e(d["badge_title"])}</summary>
+      <p>{e(d["badge_text"].format(name=name))}</p>
+      <img src="/assets/badge-featured.svg" alt="Featured on CreatorDirectory" width="220" height="54" loading="lazy" />
+      <textarea readonly rows="3" aria-label="{e(d["badge_title"])}" onfocus="this.select()">{e(badge_snippet(tool, site))}</textarea>
+    </details>
+{submit_promo(lang)}"""
+    return page_shell(lang=lang, site=site, css_v=css_v, title=title, desc=desc,
+                      path_for=lambda l: page_path(tool["id"], l), jsonld=jsonld(tool, lang, site), body=body)
 
 
 def build(tools: list[dict], site: str) -> list[str]:
