@@ -294,3 +294,5 @@ a.lang__btn { display: inline-flex; align-items: center; justify-content: center
   width: 100%; font: .82rem/1.4 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; color: var(--text);
   background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 8px; resize: vertical;
 }
+.promo--claim { border: 1px solid #2aabee; background: linear-gradient(135deg, rgba(42, 171, 238, .14), var(--surface) 60%); }
+.promo--claim .badge-embed { flex-basis: 100%; background: var(--bg); }
