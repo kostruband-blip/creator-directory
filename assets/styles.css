@@ -263,3 +263,34 @@ a.lang__btn { display: inline-flex; align-items: center; justify-content: center
 .i-star { --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5L2.5 9.4l6.6-.9z'/%3E%3C/svg%3E"); }
 .i-arrow { --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 12h15M13 6l6 6-6 6'/%3E%3C/svg%3E"); }
 .logo__mark .i { width: 14px; height: 14px; margin-left: 2px; }
+
+/* Collections (/best/) */
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip--link { text-decoration: none; }
+.chip--link:hover { color: var(--text); }
+.collections { padding-top: 8px; padding-bottom: 24px; text-align: center; }
+.collections .chips { justify-content: center; margin-top: 12px; }
+.collections__all { margin: 14px 0 0; }
+.collections__all a, .footer__eco a { color: var(--accent); }
+.coll-hero { display: grid; gap: 10px; }
+.coll-hero__meta { margin: 0; color: var(--muted); font-size: .92rem; }
+.rank { list-style: none; padding: 0; margin: 0; counter-reset: none; }
+.rank__item { display: flex; }
+.rank__item > .card { width: 100%; }
+.rank__num {
+  flex: 0 0 44px; height: 44px; border-radius: 12px; display: grid; place-items: center;
+  background: var(--surface-2); border: 1px solid var(--border); font-weight: 800; font-size: 1.1rem; color: var(--gold);
+}
+.faq--inline { padding: 0; max-width: 820px; margin: 0; }
+/* Ecosystem block in the footer */
+.footer__eco { flex-basis: 100%; display: flex; flex-wrap: wrap; gap: 4px 8px; align-items: baseline; }
+.footer .footer__eco a { color: var(--accent); }
+/* "Featured on CreatorDirectory" badge embed */
+.badge-embed { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; }
+.badge-embed summary { cursor: pointer; font-weight: 600; }
+.badge-embed p { color: var(--muted); margin: 10px 0; }
+.badge-embed img { display: block; margin: 0 0 10px; }
+.badge-embed textarea {
+  width: 100%; font: .82rem/1.4 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; color: var(--text);
+  background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 8px; resize: vertical;
+}

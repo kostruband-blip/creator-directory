@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="220" height="54" viewBox="0 0 220 54" role="img" aria-label="Featured on CreatorDirectory">
+  <title>Featured on CreatorDirectory</title>
+  <rect x="1" y="1" width="218" height="52" rx="12" fill="#0b0d12" stroke="#f5c451" stroke-width="2"/>
+  <rect x="12" y="11" width="32" height="32" rx="9" fill="#4f46e5"/>
+  <path d="M23 19v16l12-8z" fill="#f5c451"/>
+  <text x="56" y="23" font-family="Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif" font-size="10.5" font-weight="600" fill="#b7bfcf" letter-spacing=".6">FEATURED ON</text>
+  <text x="56" y="41" font-family="Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif" font-size="16.5" font-weight="800" fill="#f1f3f8">Creator<tspan fill="#f5c451">Directory</tspan></text>
+</svg>

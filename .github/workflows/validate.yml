@@ -23,4 +23,4 @@ jobs:
           SITE_URL: ${{ vars.SITE_URL || 'https://creator-directory-chi.vercel.app' }}
         run: |
           python build_seo.py
-          git add -N tools/ && git diff --exit-code -- index.html sitemap.xml robots.txt tools/ || (echo "Run 'python build_seo.py' and commit the result" && exit 1)
+          git add -N tools/ best/ && git diff --exit-code -- index.html sitemap.xml robots.txt tools/ best/ || (echo "Run 'python build_seo.py' and commit the result" && exit 1)

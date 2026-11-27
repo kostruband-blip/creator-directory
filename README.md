@@ -18,11 +18,14 @@
 | --- | --- |
 | `index.html` | Страница; между маркерами `PRERENDER`/`SEO:*` — автогенерируемый SEO-слой |
 | `assets/app.js`, `assets/styles.css` | Логика (переводы, поиск, фильтры) и стили |
-| `tools.json` | База каталога (61 сервис) |
+| `tools.json` | База каталога (66 сервисов) |
 | `tools.schema.json` | JSON Schema карточки |
 | `validate_tools.py` | Валидатор без зависимостей (схема, дубли, отсутствие кириллицы в EN) |
 | `build_seo.py` | Пересобирает пререндер, JSON-LD, `sitemap.xml`, `robots.txt` и страницы сервисов |
-| `build_pages.py` | Шаблон и тексты (EN/RU/UA) страниц сервисов; папка `tools/` генерируется целиком — не правьте её руками |
+| `build_pages.py` | Шаблон и тексты (EN/RU/UA) страниц сервисов, общий подвал «Бесплатные инструменты для авторов», бейдж; папка `tools/` генерируется целиком — не правьте её руками |
+| `build_collections.py` | Подборки под поисковые запросы `/best/<slug>/` (EN/RU/UA): список подборок и их тексты; папка `best/` генерируется целиком |
+| `indexnow_submit.py` + `<ключ>.txt` | Мгновенная отправка новых/изменённых страниц в Bing, Yandex, DuckDuckGo (IndexNow) |
+| `.github/workflows/indexnow.yml` | IndexNow после каждого деплоя `main`; ручной запуск = отправить весь sitemap |
 | `auto_update_directory.py` | Автопополнение через Gemini |
 | `.github/workflows/auto_update.yml` | Запуск по понедельникам и вручную |
 | `.github/workflows/validate.yml` | Проверка `tools.json` в PR |
@@ -59,6 +62,18 @@
 2. Способ подтверждения **«HTML-файл»**: скачайте `googleXXXX.html` → в GitHub *Add file → Upload files* в корень репозитория → Commit. Через минуту файл будет на сайте → **Подтвердить**.
 3. **Файлы Sitemap** → введите `sitemap.xml` → **Отправить**.
 4. По желанию: **Проверка URL** → `https://creator-directory-chi.vercel.app/tools/opus-clip/` → **Запросить индексирование** для ключевых страниц.
+
+### 3.2. Bing, Yandex, DuckDuckGo — IndexNow (автоматически)
+
+* Ключ IndexNow лежит в корне (`<32 символа>.txt`) — он публичный, так и задумано.
+* Новые и изменённые страницы отправляются сами: после слияния PR (`indexnow.yml`), после автопополнения и после ручной правки `tools.json`.
+* **Один раз после подключения:** *Actions → IndexNow ping → Run workflow* (галочка «all» включена) — отправит все страницы из `sitemap.xml`.
+* [Bing Webmaster Tools](https://www.bing.com/webmasters) → *Импорт из Google Search Console* — там видно, что страницы приняты.
+* Google IndexNow не поддерживает; Google Indexing API официально только для вакансий и трансляций — для каталога используйте sitemap в Search Console.
+
+### 3.3. Подборки `/best/` (программное SEO)
+
+Страницы вида `/best/ai-youtube-thumbnails/ru/` («Нейросети для обложек YouTube») собираются из `tools.json` автоматически: рейтинг, FAQ, разметка ItemList + FAQPage. Новая подборка — добавьте блок в `COLLECTIONS` в `build_collections.py` (slug, фильтр по категории или цене, тексты на 3 языках) и запустите `python build_seo.py`.
 
 ## 3.1. Автопополнение
 
