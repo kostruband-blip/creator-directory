@@ -1,3 +1,214 @@
 {
-  "tools": {}
+  "tools": {
+    "1of10": {
+      "badge_checked": "2026-11-27"
+    },
+    "2short-ai": {
+      "badge_checked": "2026-11-27"
+    },
+    "adobe-firefly": {
+      "badge_checked": "2026-11-27"
+    },
+    "autoshorts-ai": {
+      "badge_checked": "2026-11-27"
+    },
+    "camb-ai": {
+      "badge_checked": "2026-11-27"
+    },
+    "canva": {},
+    "capcut": {
+      "badge_checked": "2026-11-27"
+    },
+    "captions-app": {
+      "badge_checked": "2026-11-27"
+    },
+    "clipchamp": {
+      "badge_checked": "2026-11-27"
+    },
+    "combot": {
+      "badge_checked": "2026-11-27"
+    },
+    "controller-bot": {
+      "badge_checked": "2026-11-27"
+    },
+    "descript": {
+      "badge_checked": "2026-11-27"
+    },
+    "dubverse": {
+      "badge_checked": "2026-11-27"
+    },
+    "elevenlabs": {
+      "badge_checked": "2026-11-27"
+    },
+    "exolyt": {
+      "badge_checked": "2026-11-27"
+    },
+    "gling": {
+      "badge_checked": "2026-11-27"
+    },
+    "happy-scribe": {
+      "badge_checked": "2026-11-27"
+    },
+    "heygen": {
+      "badge_checked": "2026-11-27"
+    },
+    "hootsuite": {
+      "badge_checked": "2026-11-27"
+    },
+    "ideogram": {
+      "badge_checked": "2026-11-27"
+    },
+    "kapwing": {
+      "badge_checked": "2026-11-27"
+    },
+    "klap": {
+      "badge_checked": "2026-11-27"
+    },
+    "leonardo-ai": {},
+    "livegram-bot": {
+      "badge_checked": "2026-11-27"
+    },
+    "maestra": {
+      "badge_checked": "2026-11-27"
+    },
+    "metricool": {
+      "badge_checked": "2026-11-27"
+    },
+    "midjourney": {},
+    "munch": {
+      "badge_checked": "2026-11-27"
+    },
+    "murf-ai": {
+      "badge_checked": "2026-11-27"
+    },
+    "notjustanalytics": {
+      "badge_checked": "2026-11-27"
+    },
+    "opus-clip": {
+      "prepared_at": "2026-11-27",
+      "contacts": {
+        "emails": [
+          "contact@opus.pro"
+        ],
+        "x": [
+          "https://x.com/opusclip"
+        ],
+        "linkedin": [
+          "https://www.linkedin.com/company/opusclip"
+        ],
+        "discord": [
+          "https://discord.com/invite/wqbb7ZKhjg"
+        ],
+        "contact_page": "https://www.opus.pro/contact",
+        "lang": "en"
+      },
+      "badge_checked": "2026-11-27"
+    },
+    "photoroom": {
+      "badge_checked": "2026-11-27"
+    },
+    "picsart": {
+      "badge_checked": "2026-11-27"
+    },
+    "pikzels": {
+      "badge_checked": "2026-11-27"
+    },
+    "playboard": {
+      "badge_checked": "2026-11-27"
+    },
+    "popsters": {
+      "badge_checked": "2026-11-27"
+    },
+    "puzzlebot": {
+      "badge_checked": "2026-11-27"
+    },
+    "quso-ai": {
+      "badge_checked": "2026-11-27"
+    },
+    "rask-ai": {
+      "badge_checked": "2026-11-27"
+    },
+    "remove-bg": {
+      "badge_checked": "2026-11-27"
+    },
+    "resemble-ai": {
+      "badge_checked": "2026-11-27"
+    },
+    "rev": {
+      "badge_checked": "2026-11-27"
+    },
+    "riverside": {
+      "badge_checked": "2026-11-27"
+    },
+    "salebot": {
+      "badge_checked": "2026-11-27"
+    },
+    "social-blade": {
+      "badge_checked": "2026-11-27"
+    },
+    "speechify": {
+      "badge_checked": "2026-11-27"
+    },
+    "spikes-studio": {
+      "badge_checked": "2026-11-27"
+    },
+    "submagic": {
+      "badge_checked": "2026-11-27"
+    },
+    "synthesia": {
+      "badge_checked": "2026-11-27"
+    },
+    "telega-in": {
+      "badge_checked": "2026-11-27"
+    },
+    "telegram-ads": {
+      "badge_checked": "2026-11-27"
+    },
+    "telemetr": {},
+    "tgstat": {},
+    "thumbnailtest": {
+      "badge_checked": "2026-11-27"
+    },
+    "tribute": {
+      "badge_checked": "2026-11-27"
+    },
+    "tubebuddy": {
+      "badge_checked": "2026-11-27"
+    },
+    "veed": {
+      "badge_checked": "2026-11-27"
+    },
+    "vidiq": {
+      "badge_checked": "2026-11-27"
+    },
+    "viewstats": {
+      "badge_checked": "2026-11-27"
+    },
+    "vizard-ai": {
+      "prepared_at": "2026-11-27",
+      "contacts": {
+        "x": [
+          "https://x.com/vizard_ai"
+        ],
+        "linkedin": [
+          "https://www.linkedin.com/company/82108733"
+        ],
+        "discord": [
+          "https://discord.com/invite/kqb4YErpFG"
+        ],
+        "contact_page": "https://vizard.ai/about",
+        "lang": "en"
+      },
+      "badge_checked": "2026-11-27"
+    },
+    "vozo": {
+      "badge_checked": "2026-11-27"
+    },
+    "wavel-ai": {
+      "badge_checked": "2026-11-27"
+    },
+    "zubtitle": {
+      "badge_checked": "2026-11-27"
+    }
+  }
 }
