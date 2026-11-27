@@ -412,6 +412,14 @@ def main() -> int:
             fh.write(re.sub(r"<[^>]+>", "", text).replace("\n", "  \n") + "\n")
     if not args.no_notify and not args.dry_run:
         notify_telegram(text)
+        # Semi-automatic outreach: contacts + ready message for every new tool -> your Telegram
+        if added:
+            try:
+                import outreach
+                outreach.cmd_prepare(argparse.Namespace(ids=",".join(t["id"] for t in added), next=None,
+                                                        new=False, dry_run=False))
+            except Exception as exc:  # noqa: BLE001 - outreach must never break the catalog update
+                log(f"outreach: skipped ({exc})")
     return 0
 
 

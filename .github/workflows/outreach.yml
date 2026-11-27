@@ -1,0 +1,58 @@
+name: Outreach to tool makers
+
+# Semi-automatic outreach (nothing is sent to the makers automatically):
+#  * prepare — finds contacts on the websites of the next N tools and sends YOU a Telegram message per tool
+#              with a ready-to-paste personal message (EN/RU) and the "Featured on CreatorDirectory" badge offer;
+#  * badges  — checks which tool websites link back to CreatorDirectory and reports new / removed badges.
+# New tools found by "Auto-expand directory" are prepared automatically right after they are added.
+on:
+  schedule:
+    - cron: '0 10 * * 4'   # every Thursday 10:00 UTC
+  workflow_dispatch:
+    inputs:
+      count:
+        description: 'How many tools to prepare'
+        default: '5'
+      mode:
+        description: 'What to run'
+        type: choice
+        options: [both, prepare, badges]
+        default: both
+
+permissions:
+  contents: write
+
+concurrency:
+  group: auto-update-directory
+  cancel-in-progress: false
+
+jobs:
+  outreach:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Prepare messages for the next tools
+        if: github.event_name == 'schedule' || inputs.mode == 'both' || inputs.mode == 'prepare'
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          SITE_URL: ${{ vars.SITE_URL || 'https://creator-directory-chi.vercel.app' }}
+        run: python outreach.py prepare --next ${{ inputs.count || '5' }}
+      - name: Check badges / backlinks
+        if: github.event_name == 'schedule' || inputs.mode == 'both' || inputs.mode == 'badges'
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          SITE_URL: ${{ vars.SITE_URL || 'https://creator-directory-chi.vercel.app' }}
+        run: python outreach.py badges ${{ github.event_name == 'workflow_dispatch' && '--always-report' || '' }}
+      - name: Commit outreach log
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A outreach.json
+          git diff --staged --quiet || (git commit -m "chore: outreach log [skip ci]" && git push)

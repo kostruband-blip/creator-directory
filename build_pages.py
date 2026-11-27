@@ -61,7 +61,10 @@ T = {
         "case": "Live Case Study: 100% automated Shorts workflow",
         "rights": "All rights reserved.", "powered": "Powered by",
         "eco": "Free tools for creators:", "collections": "Collections",
-        "badge_title": "Are you the maker? Add the badge",
+        "badge_title": "Add the \u201cFeatured on CreatorDirectory\u201d badge to your site",
+        "claim_title": "Are you the maker of {name}?",
+        "claim_text": "Claim this listing in our Telegram bot: fix the description or pricing, get the badge code, or move up with Fast-Track and Top-3.",
+        "claim_btn": "Claim this listing",
         "badge_text": "Paste this code on your website to show that {name} is featured on CreatorDirectory.",
     },
     "ru": {
@@ -86,7 +89,10 @@ T = {
         "case": "Живой кейс: Shorts на 100% на автомате",
         "rights": "Все права защищены.", "powered": "Работает на",
         "eco": "Бесплатные инструменты для авторов:", "collections": "Подборки",
-        "badge_title": "Вы автор сервиса? Добавьте бейдж",
+        "badge_title": "Бейдж «Featured on CreatorDirectory» для вашего сайта",
+        "claim_title": "Вы автор сервиса {name}?",
+        "claim_text": "Подтвердите карточку в нашем Telegram-боте: исправьте описание или цену, получите код бейджа или поднимитесь выше с Fast-Track и ТОП-3.",
+        "claim_btn": "Это мой сервис",
         "badge_text": "Вставьте этот код на свой сайт, чтобы показать, что {name} есть в CreatorDirectory.",
     },
     "uk": {
@@ -111,7 +117,10 @@ T = {
         "case": "Живий кейс: Shorts на 100% на автоматі",
         "rights": "Усі права захищені.", "powered": "Працює на",
         "eco": "Безкоштовні інструменти для авторів:", "collections": "Добірки",
-        "badge_title": "Ви автор сервісу? Додайте бейдж",
+        "badge_title": "Бейдж «Featured on CreatorDirectory» для вашого сайту",
+        "claim_title": "Ви автор сервісу {name}?",
+        "claim_text": "Підтвердьте картку в нашому Telegram-боті: виправте опис чи ціну, отримайте код бейджа або підніміться вище з Fast-Track і ТОП-3.",
+        "claim_btn": "Це мій сервіс",
         "badge_text": "Вставте цей код на свій сайт, щоб показати, що {name} є в CreatorDirectory.",
     },
 }
@@ -361,6 +370,22 @@ def render(tool: dict, tools: list[dict], lang: str, site: str, css_v: str) -> s
         intro += " " + d["alts_pick"]
 
     start = "cd_" + re.sub(r"[^A-Za-z0-9_-]", "", tool["id"])[:60]
+    claim = "" if is_own(tool["url"]) else f"""
+    <section class="promo promo--claim" aria-labelledby="claimTitle">
+      <div>
+        <h2 id="claimTitle">{e(d["claim_title"].format(name=name))}</h2>
+        <p>{e(d["claim_text"])}</p>
+      </div>
+      <div class="promo__actions">
+        <a class="btn btn--tg" href="{BOT}?start=claim_{re.sub(r"[^A-Za-z0-9_-]", "", tool["id"])[:57]}" target="_blank" rel="noopener">{e(d["claim_btn"])}</a>
+      </div>
+      <details class="badge-embed">
+        <summary>{e(d["badge_title"])}</summary>
+        <p>{e(d["badge_text"].format(name=name))}</p>
+        <img src="/assets/badge-featured.svg" alt="Featured on CreatorDirectory" width="220" height="54" loading="lazy" />
+        <textarea readonly rows="3" aria-label="{e(d["badge_title"])}" onfocus="this.select()">{e(badge_snippet(tool, site))}</textarea>
+      </details>
+    </section>"""
     cta = "" if tool["id"] == FLAGSHIP_ID else f"""
     <section class="promo" aria-labelledby="promoTitle">
       <div>
@@ -407,12 +432,7 @@ def render(tool: dict, tools: list[dict], lang: str, site: str, css_v: str) -> s
       <p class="alts__more"><a href="{cat_url}">{e(d["all_tools"].format(cat=d["cat"][cat]))} <span class="i i-arrow" aria-hidden="true"></span></a></p>
     </section>
 
-    <details class="badge-embed">
-      <summary>{e(d["badge_title"])}</summary>
-      <p>{e(d["badge_text"].format(name=name))}</p>
-      <img src="/assets/badge-featured.svg" alt="Featured on CreatorDirectory" width="220" height="54" loading="lazy" />
-      <textarea readonly rows="3" aria-label="{e(d["badge_title"])}" onfocus="this.select()">{e(badge_snippet(tool, site))}</textarea>
-    </details>
+{claim}
 {submit_promo(lang)}"""
     return page_shell(lang=lang, site=site, css_v=css_v, title=title, desc=desc,
                       path_for=lambda l: page_path(tool["id"], l), jsonld=jsonld(tool, lang, site), body=body)
